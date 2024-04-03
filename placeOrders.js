@@ -8,7 +8,7 @@ async function orderSymbol(sym, side, binance, price, getUSDTBalance) {
     
         await binance.createTrailingPercentOrder(sym, 'trailing_stop',side, baseOrderAmount, undefined, trailingStopPercentage, undefined, undefined)
 
-        console.log(`${sym}order has been placed at ${price}`);
+        console.log(`${sym} ${side} order has been placed at ${price}`);
 
     } catch (error) {
         // console.log(`could not order ${sym} `);

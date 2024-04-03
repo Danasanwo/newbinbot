@@ -15,7 +15,6 @@ const placeOrder = require('./placeOrders')
 
 async function mainBot() {
     try {
-           //check current positions and status
 
 
     let allPositions = await binance.fetchPositions()
@@ -35,13 +34,7 @@ async function mainBot() {
  
     if (numberOfAvailableOrders) {
         let symBolData = await combineAlgo.compileAlgo(binance)
-
-        console.log(symBolData);
-
-
         let orderableSymbols =await placeOrder.removePositionsFromSymbolData(symBolData, uniquePositionSymbols).slice(0, numberOfAvailableOrders)
-
-
         let continueOrder = await placeOrder.cancelExistingOrders(orderableSymbols, binance, getUSDTBalance)
 
     }
