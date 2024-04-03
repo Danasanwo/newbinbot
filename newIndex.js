@@ -34,14 +34,13 @@ async function mainBot() {
     }
    
  
-    if (numberOfAvailableOrders) {
+    if (numberOfAvailableOrders > 0) {
         let symBolData = await combineAlgo.compileAlgo(binance)
-
-        console.log(symBolData);
         let orderableSymbols =await placeOrder.removePositionsFromSymbolData(symBolData, uniquePositionSymbols).slice(0, numberOfAvailableOrders)
+        console.log(orderableSymbols);
         let continueOrder = await placeOrder.cancelExistingOrders(orderableSymbols, binance, getUSDTBalance)
 
-    }
+    } else console.log('positions are filled');
 
 
 
