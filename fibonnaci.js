@@ -64,7 +64,7 @@ async function analyseFibonacci(historicalData) {
     // Function to calculate Fibonacci retracement levels based on start and end points
     function fibonacciRetracement(end, start) {
         // Define Fibonacci retracement levels
-        const fibLevels = [-0.236, -0.382,-0.5,-0.618, -0.786, 0, 0.236, 0.382, 0.5, 0.618, 0.786, 1., 1.618, 2.618, 3.618, 4.236];
+        const fibLevels = [-0.236, -0.382,-0.5,-0.618, -0.786, 0, 0.236, 0.382, 0.5, 0.618, 0.786, 1.,1.236,1.382, 1.5, 1.618, 2.618, 3.618, 4.236];
         const levels = {};
 
         // Calculate the difference between start and end points

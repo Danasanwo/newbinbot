@@ -18,8 +18,6 @@ async function prioritizeMarkets(candleStick, indicators, price) {
         bearishPoints = candleStickData.bearish * 5
     
         // sma 
-
-    
       
         function checkcrossMA(smallPeriod, largePeriod) {
             
@@ -73,11 +71,11 @@ async function prioritizeMarkets(candleStick, indicators, price) {
         // rsi 
         if (indicatorsData.RSI >= 90) {
             bullishPoints += 0
-            bearishPoints += 25
+            bearishPoints += 30
     
         } else if ( indicatorsData.RSI >= 80 ) {
             bullishPoints += 0
-            bearishPoints += 15
+            bearishPoints += 20
     
     
         } else if (  indicatorsData.RSI >= 70 ) {
@@ -99,11 +97,11 @@ async function prioritizeMarkets(candleStick, indicators, price) {
                 bullishPoints += 10
                 bearishPoints += 0
         } else if (  indicatorsData.RSI > 10 ) {
-            bullishPoints += 15
+            bullishPoints += 20
             bearishPoints += 0 
             
         } else if ( indicatorsData.RSI <= 10 ) {
-                bullishPoints += 25
+                bullishPoints += 30
                 bearishPoints += 0
         }
     
@@ -301,27 +299,18 @@ async function prioritizeMarkets(candleStick, indicators, price) {
         //OBV
     
     
-        checkcrossMA(3, 5)
+
         checkcrossMA(3, 10)
-        checkcrossMA(3, 13)
         checkcrossMA(3, 25)
         checkcrossMA(3, 50)
         checkcrossMA(3, 99)
-        checkcrossMA(5, 10)
-        checkcrossMA(5, 13)
         checkcrossMA(5, 25)
-        checkcrossMA(5, 50)
         checkcrossMA(5, 99)
-        checkcrossMA(10, 13)
         checkcrossMA(10, 25)
-        checkcrossMA(10, 50)
         checkcrossMA(10, 99)
-        checkcrossMA(13, 25)
         checkcrossMA(13, 50)
         checkcrossMA(13, 99)
         checkcrossMA(25, 50)
-        checkcrossMA(25, 99)
-        checkcrossMA(50, 99)
        
     
          // Return bullishPoints - bearishPoints
@@ -341,7 +330,7 @@ async function prioritizeMarkets(candleStick, indicators, price) {
 
 function combineTimePeriod(periodOne, periodTwo, periodThree) {
     try {
-        let totalPeriodPoints = periodOne + (2 * periodTwo) + (4 * periodThree)
+        let totalPeriodPoints = periodOne + (4 * periodTwo) + (8 * periodThree)
 
         return totalPeriodPoints
     } catch (error) {

@@ -7,6 +7,11 @@ function analyseCandlesticks(historicalData) {
     };
     let ohlcv = historicalData;
 
+    if (ohlcv.length < 4) {
+        console.error("Insufficient historical data for analysis.");
+        return {}; // or handle the case according to your requirements
+    }
+
     // Create objects for OHLCV data
     const todayOHLCV = {
         O: ohlcv[ohlcv.length - 1][1], // Open
