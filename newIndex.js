@@ -45,11 +45,6 @@ async function mainBot() {
 
 
 
-
-
-
-
-
     } catch (error) {
         console.log(error);
     }
@@ -63,5 +58,5 @@ const binance = new ccxt.binanceusdm({
 
 mainBot()
 
-setInterval(mainBot, 900000)
+setInterval(mainBot, 1200000)
 
