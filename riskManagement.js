@@ -19,7 +19,7 @@ async function setStopLossTakeProfit(pos, binance) {
             // Check if stop loss or take profit conditions are met
             if (pos.unrealizedPnl <= stopLossThreshold || pos.unrealizedPnl >= takeProfitThreshold) {
                 // Create trailing stop order
-                await binance.createTrailingPercentOrder(pos.info.symbol, 'trailing_stop', side, pos.contracts, undefined, pos.unrealizedPnl <= stopLossThreshold ? 5 : 2);
+                await binance.createTrailingPercentOrder(pos.info.symbol, 'trailing_stop', side, pos.contracts, undefined, pos.unrealizedPnl <= stopLossThreshold ? 4 : 1);
 
                 console.log(`stop loss for ${pos.info.symbol}`);
             } else {
