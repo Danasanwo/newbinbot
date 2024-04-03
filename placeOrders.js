@@ -19,6 +19,8 @@ async function orderSymbol(sym, side, binance, price, getUSDTBalance) {
 
 async function cancelExistingOrders(markets, binance, getUSDTBalance) {
 
+    console.log("let's go");
+
     try {
         if (markets.length == 0) return false
 
