@@ -16,6 +16,8 @@ const placeOrder = require('./placeOrders')
 async function mainBot() {
     try {
 
+    console.log("let's go");
+
 
     let allPositions = await binance.fetchPositions()
     let getAllMarket = await getHistoricalData.getAllMarket(binance)
