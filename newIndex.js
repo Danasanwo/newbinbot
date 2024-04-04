@@ -58,5 +58,5 @@ const binance = new ccxt.binanceusdm({
 
 mainBot()
 
-setInterval(mainBot, 1200000)
+setInterval(mainBot, 720000)
 
