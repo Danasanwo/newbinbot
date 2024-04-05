@@ -11,39 +11,73 @@ const getHistoricalData = require('./getHistoricalData')
 const random = require('./random');
 const combineAlgo = require('./compileAlgo')
 const placeOrder = require('./placeOrders')
+const orderSystem = require('./botTwoOrderSystem')
 
 
 async function mainBot() {
     try {
 
-    console.log("let's go");
-
-
-    let allPositions = await binance.fetchPositions()
-    let getAllMarket = await getHistoricalData.getAllMarket(binance)
-    let getUSDTBalance = await (await binance.fetchBalance()).info.availableBalance
-    let positionSymbols = allPositions.map(obj => obj.info.symbol)
-    let uniquePositionSymbols = [...new Set(positionSymbols) ]
-    let numberOfAvailableOrders = 5 - uniquePositionSymbols.length 
-    
-  
-
- 
-    for (pos of allPositions) {
-        riskManager.setStopLossTakeProfit(pos, binance)
-    }
-   
- 
-    if (numberOfAvailableOrders > 0) {
         let symBolData = await combineAlgo.compileAlgo(binance)
-        let orderableSymbols =await placeOrder.removePositionsFromSymbolData(symBolData, uniquePositionSymbols).slice(0, numberOfAvailableOrders)
-        console.log(orderableSymbols);
-        let continueOrder = await placeOrder.cancelExistingOrders(orderableSymbols, binance, getUSDTBalance)
+        
 
-    } else console.log('positions are filled');
+        console.log("let's go for bot 1");
 
 
+        let allPositions = await binance.fetchPositions()
+        let getUSDTBalance = await (await binance.fetchBalance()).info.availableBalance
+        let positionSymbols = allPositions.map(obj => obj.info.symbol)
+        let uniquePositionSymbols = [...new Set(positionSymbols) ]
+        let numberOfAvailableOrders = 5 - uniquePositionSymbols.length 
 
+
+        console.log("let's go for bot 2");
+
+        let allPositionsBotTwo = await secondBinance.fetchPositions()
+        let getUSDTBalanceBotTwo = await (await secondBinance.fetchBalance()).info.availableBalance
+        let positionSymbolsBotTwo = allPositionsBotTwo.map(obj => obj.info.symbol)
+        let uniquePositionSymbolsBotTwo = [...new Set(positionSymbolsBotTwo) ]
+        let numberOfAvailableOrdersBotTwo = 5 - uniquePositionSymbolsBotTwo.length 
+
+
+    
+        for (pos of allPositions) {
+            riskManager.setStopLossTakeProfit(pos, binance)
+        }
+
+        for (pos of allPositionsBotTwo) {
+            orderSystem.setStopLossTakeProfit(pos, secondBinance)
+        }
+    
+    
+        // if (numberOfAvailableOrders > 0) {
+       
+        //     try {
+        //         let orderableSymbols =await placeOrder.removePositionsFromSymbolData(symBolData, uniquePositionSymbols).slice(0, numberOfAvailableOrders)
+        //         let continueOrder = await placeOrder.cancelExistingOrders(orderableSymbols, binance, getUSDTBalance)
+        //     } catch (error) {
+        //         console.log('error placing order in bot 1');
+        //     }
+       
+
+        // } else console.log('positions in bot 1 are filled');
+
+        if (numberOfAvailableOrdersBotTwo > 0) {
+
+            try {
+                let orderableSymbolsinBotTwo = await placeOrder.removePositionsFromSymbolData(symBolData, uniquePositionSymbolsBotTwo).slice(0, numberOfAvailableOrdersBotTwo)
+                let continueOrderinBotTwo = await orderSystem.cancelExistingOrders(orderableSymbolsinBotTwo, secondBinance, getUSDTBalanceBotTwo)
+            } catch (error) {
+                console.log('error placing order in bot 2');
+            }
+
+        } else console.log('positions in bot 2 are filled');
+
+
+
+        for (pos of allPositionsBotTwo) {
+            orderSystem.setStopLossTakeProfit(pos, secondBinance)
+        }
+    
 
     } catch (error) {
         console.log(error);
@@ -53,6 +87,11 @@ async function mainBot() {
 const binance = new ccxt.binanceusdm({
     apiKey: process.env.BINANCE_API_KEY,
     secret: process.env.BINANCE_SECRET_KEY
+})
+
+const secondBinance = new ccxt.binanceusdm({
+    apiKey: process.env.BINANCE_TWO_API_KEY,
+    secret: process.env.BINANCE_TWO_SECRET_KEY
 })
 
 
