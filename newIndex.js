@@ -71,12 +71,6 @@ async function mainBot() {
             }
 
         } else console.log('positions in bot 2 are filled');
-
-
-
-        for (pos of allPositionsBotTwo) {
-            orderSystem.setStopLossTakeProfit(pos, secondBinance)
-        }
     
 
     } catch (error) {
