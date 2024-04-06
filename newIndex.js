@@ -49,17 +49,17 @@ async function mainBot() {
         }
     
     
-        // if (numberOfAvailableOrders > 0) {
+        if (numberOfAvailableOrders > 0) {
        
-        //     try {
-        //         let orderableSymbols =await placeOrder.removePositionsFromSymbolData(symBolData, uniquePositionSymbols).slice(0, numberOfAvailableOrders)
-        //         let continueOrder = await placeOrder.cancelExistingOrders(orderableSymbols, binance, getUSDTBalance)
-        //     } catch (error) {
-        //         console.log('error placing order in bot 1');
-        //     }
+            try {
+                let orderableSymbols =await placeOrder.removePositionsFromSymbolData(symBolData, uniquePositionSymbols).slice(0, numberOfAvailableOrders)
+                let continueOrder = await placeOrder.cancelExistingOrders(orderableSymbols, binance, getUSDTBalance)
+            } catch (error) {
+                console.log('error placing order in bot 1');
+            }
        
 
-        // } else console.log('positions in bot 1 are filled');
+        } else console.log('positions in bot 1 are filled');
 
         if (numberOfAvailableOrdersBotTwo > 0) {
 
