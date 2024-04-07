@@ -763,6 +763,9 @@ function analyseCandlesticks(historicalData) {
     detectBearishSideBySideBlackLines()
     detectBullishTweezerTops()
     detectBearishTweezerTops()
+    
+
+    console.log(direction.bullish_name, direction.bearish_name);
 
     return direction
 

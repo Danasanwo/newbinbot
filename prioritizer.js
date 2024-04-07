@@ -14,8 +14,8 @@ async function prioritizeMarkets(candleStick, indicators, price) {
         // candleStick 
     
     
-        bullishPoints = candleStickData.bullish * 5
-        bearishPoints = candleStickData.bearish * 5
+        bullishPoints = candleStickData.bullish * 20
+        bearishPoints = candleStickData.bearish * 20
     
         // sma 
       
@@ -52,17 +52,17 @@ async function prioritizeMarkets(candleStick, indicators, price) {
         //adx
     
         if (indicatorsData.ADX > 80) {
-            bullishPoints += 8
-            bearishPoints += 8
-        } else if ( indicatorsData.ADX > 60 ) {
             bullishPoints += 6
             bearishPoints += 6
+        } else if ( indicatorsData.ADX > 60 ) {
+            bullishPoints += 9
+            bearishPoints += 9
         } else if ( indicatorsData.ADX > 40 ) {
-            bullishPoints += 4
-            bearishPoints += 4
+            bullishPoints += 12
+            bearishPoints += 12
         } else if ( indicatorsData.ADX > 20 ) {
-            bullishPoints += 2
-            bearishPoints += 2
+            bullishPoints += 15
+            bearishPoints += 15
         }
     
         // console.log( bullishPoints, bearishPoints);
@@ -75,12 +75,12 @@ async function prioritizeMarkets(candleStick, indicators, price) {
     
         } else if ( indicatorsData.RSI >= 80 ) {
             bullishPoints += 0
-            bearishPoints += 35
+            bearishPoints += 30
     
     
         } else if (  indicatorsData.RSI >= 70 ) {
             bullishPoints += 0
-            bearishPoints += 20
+            bearishPoints += 12
     
         } else if ( indicatorsData.RSI >55 ) {
             bullishPoints += 2
@@ -94,10 +94,10 @@ async function prioritizeMarkets(candleStick, indicators, price) {
             bullishPoints += 6
             bearishPoints += 2
         } else if (  indicatorsData.RSI >= 20 ) {
-                bullishPoints += 20
+                bullishPoints += 12
                 bearishPoints += 0
         } else if (  indicatorsData.RSI > 10 ) {
-            bullishPoints += 35
+            bullishPoints += 30
             bearishPoints += 0 
             
         } else if ( indicatorsData.RSI <= 10 ) {
@@ -314,7 +314,7 @@ async function prioritizeMarkets(candleStick, indicators, price) {
        
     
          // Return bullishPoints - bearishPoints
-        //  console.log(bullishPoints , bearishPoints);
+         console.log(bullishPoints , bearishPoints);
          return bullishPoints - bearishPoints;
         
     } catch (error) {
@@ -330,7 +330,7 @@ async function prioritizeMarkets(candleStick, indicators, price) {
 
 function combineTimePeriod(periodOne, periodTwo, periodThree) {
     try {
-        let totalPeriodPoints = periodOne + (4 * periodTwo) + (10 * periodThree)
+        let totalPeriodPoints = periodOne + (2 * periodTwo) + (5 * periodThree)
 
         return totalPeriodPoints
     } catch (error) {

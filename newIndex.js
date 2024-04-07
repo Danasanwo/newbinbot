@@ -18,59 +18,61 @@ async function mainBot() {
     try {
 
         let symBolData = await combineAlgo.compileAlgo(binance)
+
+        console.log(symBolData);
         
 
-        console.log("let's go for bot 1");
+        // console.log("let's go for bot 1");
 
 
-        let allPositions = await binance.fetchPositions()
-        let getUSDTBalance = await (await binance.fetchBalance()).info.availableBalance
-        let positionSymbols = allPositions.map(obj => obj.info.symbol)
-        let uniquePositionSymbols = [...new Set(positionSymbols) ]
-        let numberOfAvailableOrders = 5 - uniquePositionSymbols.length 
+        // let allPositions = await binance.fetchPositions()
+        // let getUSDTBalance = await (await binance.fetchBalance()).info.availableBalance
+        // let positionSymbols = allPositions.map(obj => obj.info.symbol)
+        // let uniquePositionSymbols = [...new Set(positionSymbols) ]
+        // let numberOfAvailableOrders = 5 - uniquePositionSymbols.length 
 
 
-        console.log("let's go for bot 2");
+        // console.log("let's go for bot 2");
 
-        let allPositionsBotTwo = await secondBinance.fetchPositions()
-        let getUSDTBalanceBotTwo = await (await secondBinance.fetchBalance()).info.availableBalance
-        let positionSymbolsBotTwo = allPositionsBotTwo.map(obj => obj.info.symbol)
-        let uniquePositionSymbolsBotTwo = [...new Set(positionSymbolsBotTwo) ]
-        let numberOfAvailableOrdersBotTwo = 5 - uniquePositionSymbolsBotTwo.length 
+        // let allPositionsBotTwo = await secondBinance.fetchPositions()
+        // let getUSDTBalanceBotTwo = await (await secondBinance.fetchBalance()).info.availableBalance
+        // let positionSymbolsBotTwo = allPositionsBotTwo.map(obj => obj.info.symbol)
+        // let uniquePositionSymbolsBotTwo = [...new Set(positionSymbolsBotTwo) ]
+        // let numberOfAvailableOrdersBotTwo = 5 - uniquePositionSymbolsBotTwo.length 
 
 
     
-        for (pos of allPositions) {
-            riskManager.setStopLossTakeProfit(pos, binance)
-        }
+        // for (pos of allPositions) {
+        //     riskManager.setStopLossTakeProfit(pos, binance)
+        // }
 
-        for (pos of allPositionsBotTwo) {
-            orderSystem.setStopLossTakeProfit(pos, secondBinance)
-        }
+        // for (pos of allPositionsBotTwo) {
+        //     orderSystem.setStopLossTakeProfit(pos, secondBinance)
+        // }
     
     
-        if (numberOfAvailableOrders > 0) {
+        // if (numberOfAvailableOrders > 0) {
        
-            try {
-                let orderableSymbols =await placeOrder.removePositionsFromSymbolData(symBolData, uniquePositionSymbols).slice(0, numberOfAvailableOrders)
-                let continueOrder = await placeOrder.cancelExistingOrders(orderableSymbols, binance, getUSDTBalance)
-            } catch (error) {
-                console.log('error placing order in bot 1');
-            }
+        //     try {
+        //         let orderableSymbols =await placeOrder.removePositionsFromSymbolData(symBolData, uniquePositionSymbols).slice(0, numberOfAvailableOrders)
+        //         let continueOrder = await placeOrder.cancelExistingOrders(orderableSymbols, binance, getUSDTBalance)
+        //     } catch (error) {
+        //         console.log('error placing order in bot 1');
+        //     }
        
 
-        } else console.log('positions in bot 1 are filled');
+        // } else console.log('positions in bot 1 are filled');
 
-        if (numberOfAvailableOrdersBotTwo > 0) {
+        // if (numberOfAvailableOrdersBotTwo > 0) {
 
-            try {
-                let orderableSymbolsinBotTwo = await placeOrder.removePositionsFromSymbolData(symBolData, uniquePositionSymbolsBotTwo).slice(0, numberOfAvailableOrdersBotTwo)
-                let continueOrderinBotTwo = await orderSystem.cancelExistingOrders(orderableSymbolsinBotTwo, secondBinance, getUSDTBalanceBotTwo)
-            } catch (error) {
-                console.log('error placing order in bot 2');
-            }
+        //     try {
+        //         let orderableSymbolsinBotTwo = await placeOrder.removePositionsFromSymbolData(symBolData, uniquePositionSymbolsBotTwo).slice(0, numberOfAvailableOrdersBotTwo)
+        //         let continueOrderinBotTwo = await orderSystem.cancelExistingOrders(orderableSymbolsinBotTwo, secondBinance, getUSDTBalanceBotTwo)
+        //     } catch (error) {
+        //         console.log('error placing order in bot 2');
+        //     }
 
-        } else console.log('positions in bot 2 are filled');
+        // } else console.log('positions in bot 2 are filled');
     
 
     } catch (error) {
