@@ -765,8 +765,6 @@ function analyseCandlesticks(historicalData) {
     detectBearishTweezerTops()
     
 
-    console.log(direction.bullish_name, direction.bearish_name);
-
     return direction
 
 }

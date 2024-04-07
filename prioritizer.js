@@ -314,7 +314,6 @@ async function prioritizeMarkets(candleStick, indicators, price) {
        
     
          // Return bullishPoints - bearishPoints
-         console.log(bullishPoints , bearishPoints);
          return bullishPoints - bearishPoints;
         
     } catch (error) {

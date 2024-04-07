@@ -37,7 +37,6 @@ async function compileAlgo(binance) {
 
         const combinePri = await prioritizer.combineTimePeriod(prioritizeOneHour, prioritizeFourHours, prioritizeOneDay);
 
-        console.log(symbol, combinePri);
 
         symBolData.push([symbol, combinePri, historicalDataOneHour[historicalDataOneHour.length - 1][4]]);
     }));
