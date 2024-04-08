@@ -2,8 +2,8 @@ async function orderSymbol(sym, side, binance, price, getUSDTBalance) {
     try {
         let trailingStopPercentage = 2
         let leverage =  await binance.fetchLeverages(sym)
-        let baseOrderAmount = ((0.02 * getUSDTBalance) * 20)/ price
-        let triggerPrice = await side == 'buy' ? (price - (0.005 * price)) : (price + (0.005 * price))
+        let baseOrderAmount = ((0.0125 * getUSDTBalance) * 20)/ price
+        let triggerPrice = await side == 'buy' ? (price - (0.02 * price)) : (price + (0.02 * price))
 
         let additionalParams = await side == 'buy' ? 'LONG': 'SHORT'
     
@@ -22,18 +22,33 @@ async function cancelExistingOrders(markets, binance, getUSDTBalance) {
 
 
     try {
-        if (markets.length == 0) return false
+        let timeNow = new Date().getTime()
+   
 
         for (market of markets) {
+
+
              let marketSymbol =await market[0]
              let marketSide = await market[1] >= 0 ? 'buy': 'sell'
              let currentPrice = await market[2]
              let openOrders = await binance.fetchOpenOrders(marketSymbol)
              
      
-             if (openOrders.length == 0) {
+            if (openOrders.length == 0) {
                await orderSymbol(marketSymbol, marketSide, binance, currentPrice, getUSDTBalance)
              }
+
+            if (openOrders.length > 0) {
+                for (const ord of openOrders) {
+                    if (timeNow > (ord.lastUpdateTimestamp + 86400000) ) {
+                        await binance.cancelOrder(ord.id, ord.info.symbol);
+                    }
+
+                    if (ord.info.priceRate == 0.75) { //checkriskmanagement setSLTPorders() 
+                        //set order
+                    }
+                }
+            }
          
         }
         

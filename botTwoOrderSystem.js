@@ -5,7 +5,7 @@ async function setStopLossTakeProfit(pos, binance) {
 
 
         let side = pos.side === 'short' || pos.side === 'sell' ? 'buy' : 'sell';
-        let stopLossPrice = await pos.side === 'short' || pos.side === 'sell' ? (pos.entryPrice + (0.1 * pos.entryPrice )): (pos.entryPrice - (0.1 * pos.entryPrice ))
+        let stopLossPrice = await pos.side === 'short' || pos.side === 'sell' ? (pos.entryPrice + (0.15 * pos.entryPrice )): (pos.entryPrice - (0.15 * pos.entryPrice ))
         let takeProfitPrice = await pos.side === 'short' || pos.side === 'sell' ? (pos.entryPrice - (0.0125 * pos.entryPrice )): (pos.entryPrice + (0.0125 * pos.entryPrice ))
         let stopLossThreshold = -(2 * pos.initialMargin);
         let takeProfitThreshold = 0.2 * pos.initialMargin;
@@ -28,8 +28,7 @@ async function setStopLossTakeProfit(pos, binance) {
 
         if ( getPositionOrders.length === 1) {
 
-            console.log(getPositionOrders[0].triggerPrice, pos.entryPrice, stopLossPrice, side);
-
+            console.log(getPositionOrders[0]);
 
 
             if (pos.unrealizedPnl <= stopLossThreshold) {

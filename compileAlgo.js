@@ -5,10 +5,10 @@ const getHistoricalData = require('./getHistoricalData');
 const random = require('./random');
 
 async function compileAlgo(binance) {
-    const getAllMarket = await getHistoricalData.getAllMarket(binance);1
+    const getAllMarket = await getHistoricalData.getAllMarket(binance);
     const symBolData = [];
 
-    await Promise.all(getAllMarket.slice(0,180).map(async symbol => {
+    await Promise.all(getAllMarket.slice(0,20).map(async symbol => {
         const [historicalDataOneHour, historicalDataFourHour, historicalDataOneDay] = await Promise.all([
             binance.fetchOHLCV(symbol, '1h'),
             binance.fetchOHLCV(symbol, '4h'),

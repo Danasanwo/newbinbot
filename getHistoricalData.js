@@ -31,7 +31,7 @@ async function getAllMarket(exchange) {
     
         return futuresMarket
     } catch (error) {
-        console.log(`could not get all markets`);
+        console.log(`could not get all markets: ${error.message}`);
     }
     // let allMarket = await 
    
