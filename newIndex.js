@@ -17,7 +17,7 @@ const orderSystem = require('./botTwoOrderSystem')
 async function mainBot() {
     try {
 
-        let symBolData = await combineAlgo.compileAlgo(binance)
+        let symBolData = await combineAlgo.compileAlgo(secondBinance)
 
 
         console.log("let's go for bot 1");
@@ -27,7 +27,7 @@ async function mainBot() {
         let getUSDTBalance = await (await binance.fetchBalance()).info.availableBalance
         let positionSymbols = allPositions.map(obj => obj.info.symbol)
         let uniquePositionSymbols = [...new Set(positionSymbols) ]
-        let numberOfAvailableOrders = 5 - uniquePositionSymbols.length 
+        let numberOfAvailableOrders = 7 - uniquePositionSymbols.length 
 
 
       
