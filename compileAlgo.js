@@ -38,7 +38,7 @@ async function compileAlgo(binance) {
         const combinePri = await prioritizer.combineTimePeriod(prioritizeOneHour, prioritizeFourHours, prioritizeOneDay);
 
 
-        symBolData.push([symbol, combinePri, historicalDataOneHour[historicalDataOneHour.length - 1][4]]);
+        symBolData.push([symbol, combinePri, historicalDataOneHour[historicalDataOneHour.length - 1][4]], `RSI4h: ${fourHourIndicators.RSI}`, `RSI1d: ${oneDayIndicators.RSI}`);
     }));
 
     symBolData.sort((a, b) => Math.abs(b[1]) - Math.abs(a[1]));

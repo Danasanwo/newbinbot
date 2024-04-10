@@ -17,7 +17,6 @@ const orderSystem = require('./botTwoOrderSystem')
 async function mainBot() {
     try {
 
-        let symBolData = await combineAlgo.compileAlgo(secondBinance)
 
 
         console.log("let's go for bot 1");
@@ -29,18 +28,16 @@ async function mainBot() {
         let uniquePositionSymbols = [...new Set(positionSymbols) ]
         let numberOfAvailableOrders = 7 - uniquePositionSymbols.length 
 
-
-      
-
-
     
         for (pos of allPositions) {
             riskManager.setStopLossTakeProfit(pos, binance)
         }
 
-    
-    
         if (numberOfAvailableOrders > 0) {
+
+            let symBolData = await combineAlgo.compileAlgo(secondBinance)
+
+            console.log(symBolData);
        
             try {
                 let orderableSymbols =await placeOrder.removePositionsFromSymbolData(symBolData, uniquePositionSymbols).slice(0, numberOfAvailableOrders)
@@ -51,6 +48,21 @@ async function mainBot() {
        
 
         } else console.log('positions in bot 1 are filled');
+
+        console.log("let's go for bot 2");
+
+        let allPositionsBotTwo = await secondBinance.fetchPositions()
+
+
+        for (pos of allPositionsBotTwo) {
+            orderSystem.setStopLossTakeProfit(pos, secondBinance)
+        }
+
+
+
+
+
+
 
   
     

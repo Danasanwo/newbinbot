@@ -5,20 +5,20 @@ async function setStopLossTakeProfit(pos, binance) {
 
 
         let side = pos.side === 'short' || pos.side === 'sell' ? 'buy' : 'sell';
-        let stopLossPrice = await pos.side === 'short' || pos.side === 'sell' ? (pos.entryPrice + (0.15 * pos.entryPrice )): (pos.entryPrice - (0.15 * pos.entryPrice ))
-        let takeProfitPrice = await pos.side === 'short' || pos.side === 'sell' ? (pos.entryPrice - (0.0125 * pos.entryPrice )): (pos.entryPrice + (0.0125 * pos.entryPrice ))
-        let stopLossThreshold = -(2 * pos.initialMargin);
-        let takeProfitThreshold = 0.2 * pos.initialMargin;
+        let stopLossPrice = await pos.side === 'short' || pos.side === 'sell' ? (pos.entryPrice + (0.3 * pos.entryPrice )): (pos.entryPrice - (0.3 * pos.entryPrice ))
+        let takeProfitPrice = await pos.side === 'short' || pos.side === 'sell' ? (pos.entryPrice - (0.15 * pos.entryPrice )): (pos.entryPrice + (0.15 * pos.entryPrice ))
+        let stopLossThreshold = -(6 * pos.initialMargin);
+        let takeProfitThreshold = 3 * pos.initialMargin;
 
         async function setSLTPorders() {
             // Check if stop loss or take profit conditions are met
             if (pos.unrealizedPnl <= stopLossThreshold || pos.unrealizedPnl >= takeProfitThreshold) {
                 // Create trailing stop order
-                await binance.createTrailingPercentOrder(pos.info.symbol, 'trailing_stop', side, pos.contracts, undefined, pos.unrealizedPnl <= stopLossThreshold ? 5 : 0.4);
+                await binance.createTrailingPercentOrder(pos.info.symbol, 'trailing_stop', side, pos.contracts, undefined, 5)
 
                 console.log(`stop loss for ${pos.info.symbol}`);
             } else {
-                await binance.createTrailingPercentOrder(pos.info.symbol, 'trailing_stop', side, pos.contracts, undefined, 0.4, takeProfitPrice);
+                await binance.createTrailingPercentOrder(pos.info.symbol, 'trailing_stop', side, pos.contracts, undefined, 5, takeProfitPrice);
             }   console.log(`take profit for ${pos.info.symbol}`);
         }
 
