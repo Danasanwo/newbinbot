@@ -3,12 +3,13 @@ const techApi = require('./techApi');
 const prioritizer = require('./prioritizer');
 const getHistoricalData = require('./getHistoricalData');
 const random = require('./random');
+const calculateRSI = require('./calculateRSI')
 
 async function compileAlgo(binance) {
     const getAllMarket = await getHistoricalData.getAllMarket(binance);
     const symBolData = [];
 
-    await Promise.all(getAllMarket.slice(0,180).map(async symbol => {
+    await Promise.all(getAllMarket.slice(0,10).map(async symbol => {
         const [historicalDataOneHour, historicalDataFourHour, historicalDataOneDay] = await Promise.all([
             binance.fetchOHLCV(symbol, '1h'),
             binance.fetchOHLCV(symbol, '4h'),
@@ -21,7 +22,12 @@ async function compileAlgo(binance) {
             historicalDataFourHour.slice(0, -4),
             historicalDataOneDay.slice(0, -1)
         ];
-    
+
+        const [rsi1h, rsi4h, rsi1d] = await Promise.all([
+            calculateRSI.calculateRSI(historicalDataOneHour),
+            calculateRSI.calculateRSI(historicalDataFourHour),
+            calculateRSI.calculateRSI(historicalDataOneDay)
+        ])
 
         const [oneHourCandlesticks, fourHourCandlesticks, oneDayCandlesticks, yesterdayCandleSticks] = await Promise.all([
             random.analyseCandlesticks(historicalDataOneHour),
@@ -29,6 +35,8 @@ async function compileAlgo(binance) {
             random.analyseCandlesticks(historicalDataOneDay),
             random.analyseCandlesticks(trimmedDataOneDay)
         ]);
+
+    
 
 
         const [oneHourIndicators, fourHourIndicators, oneDayIndicators, yesterdayIndicators] = await Promise.all([
@@ -49,8 +57,13 @@ async function compileAlgo(binance) {
 
         const combinePri = await prioritizer.combineTimePeriod(prioritizeOneHour, prioritizeFourHours, prioritizeOneDay, prioritizeYesterday);
 
+        let fourHourCandle = fourHourCandlesticks.bullish - fourHourCandlesticks.bearish
+        let oneDayCandle = oneDayCandlesticks.bullish - oneDayCandlesticks.bullish
 
-        symBolData.push([symbol, combinePri, historicalDataOneHour[historicalDataOneHour.length - 1][4], `RSI4h: ${fourHourIndicators.RSI}`, `RSI1d: ${oneDayIndicators.RSI}`]);
+        // symBolData.push([symbol, combinePri, historicalDataOneHour[historicalDataOneHour.length - 1][4], `RSI4h: ${fourHourIndicators.RSI}`, `RSI1d: ${oneDayIndicators.RSI}`]);
+
+        symBolData.push([symbol, combinePri, historicalDataOneHour[historicalDataOneHour.length - 1][4], rsi4h, rsi1d, fourHourCandlesticks, oneDayCandlesticks] );
+
     }));
 
     symBolData.sort((a, b) => Math.abs(b[1]) - Math.abs(a[1]));

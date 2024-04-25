@@ -5,7 +5,7 @@ function analyseCandlesticks(historicalData) {
         bullish: 0,
         bullish_name: [],
         bearish: 0,
-        bearish_name: []
+        bearish_name: [],
     }
     let ohlcv = historicalData
 

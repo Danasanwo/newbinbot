@@ -12,11 +12,15 @@ const random = require('./random');
 const combineAlgo = require('./compileAlgo')
 const placeOrder = require('./placeOrders')
 const orderSystem = require('./botTwoOrderSystem')
+const newOrderSystem = require('./newOrderSystem')
 
 
 async function mainBot() {
     try {
 
+        let symBolData = await combineAlgo.compileAlgo(binance)
+
+        console.log(symBolData);
 
 
         console.log("let's go for bot 1");
@@ -26,37 +30,62 @@ async function mainBot() {
         let getUSDTBalance = await (await binance.fetchBalance()).info.availableBalance
         let positionSymbols = allPositions.map(obj => obj.info.symbol)
         let uniquePositionSymbols = [...new Set(positionSymbols) ]
-        let numberOfAvailableOrders = 8 - uniquePositionSymbols.length 
+        let numberOfAvailableOrders = 100 - uniquePositionSymbols.length 
 
     
         for (pos of allPositions) {
+            console.log(pos);
             riskManager.setStopLossTakeProfit(pos, binance)
         }
 
         if (numberOfAvailableOrders > 0) {
 
-            let symBolData = await combineAlgo.compileAlgo(secondBinance)
-
-            console.log(symBolData);
-       
             try {
+
                 let orderableSymbols =await placeOrder.removePositionsFromSymbolData(symBolData, uniquePositionSymbols).slice(0, numberOfAvailableOrders)
-                let continueOrder = await placeOrder.cancelExistingOrders(orderableSymbols, binance, getUSDTBalance)
+
+
+                
             } catch (error) {
                 console.log('error placing order in bot 1');
             }
        
+            // try {
+            //     let orderableSymbols =await placeOrder.removePositionsFromSymbolData(symBolData, uniquePositionSymbols).slice(0, numberOfAvailableOrders)
+            //     let continueOrder = await placeOrder.cancelExistingOrders(orderableSymbols, binance, getUSDTBalance)
+            // } catch (error) {
+            //     console.log('error placing order in bot 1');
+            // }
+       
 
         } else console.log('positions in bot 1 are filled');
 
-        console.log("let's go for bot 2");
-
-        let allPositionsBotTwo = await secondBinance.fetchPositions()
 
 
-        for (pos of allPositionsBotTwo) {
-            orderSystem.setStopLossTakeProfit(pos, secondBinance)
-        }
+        // console.log("let's go for bot 2");
+
+        // let allPositionsBotTwo = await secondBinance.fetchPositions()
+        // let getUSDTBalanceBotTwo = await (await secondBinance.fetchBalance()).info.availableBalance
+        // let positionSymbolsBotTwo = allPositionsBotTwo.map(obj => obj.info.symbol)
+        // let uniquePositionSymbolsBotTwo = [...new Set(positionSymbolsBotTwo) ]
+        // let numberOfAvailableOrdersBotTwo = 8 - uniquePositionSymbolsBotTwo.length 
+
+
+        // for (pos of allPositionsBotTwo) {
+        //     orderSystem.setStopLossTakeProfit(pos, secondBinance)
+        // }
+
+        // if (numberOfAvailableOrdersBotTwo > 0) {
+
+        //     try {
+        //         let orderableSymbolsinBotTwo = await placeOrder.removePositionsFromSymbolData(symBolData, uniquePositionSymbolsBotTwo).slice(0, numberOfAvailableOrdersBotTwo)
+        //         let continueOrderinBotTwo = await orderSystem.cancelExistingOrders(orderableSymbolsinBotTwo, secondBinance, getUSDTBalanceBotTwo)
+        //     } catch (error) {
+        //         console.log('error placing order in bot 2');
+        //     }
+
+        // } else console.log('positions in bot 2 are filled');
+     
 
 
 
@@ -85,31 +114,12 @@ const secondBinance = new ccxt.binanceusdm({
 
 mainBot()
 
-setInterval(mainBot, 900000)
+setInterval(mainBot, 1200000)
 
 
 
-      // if (numberOfAvailableOrdersBotTwo > 0) {
-
-        //     try {
-        //         let orderableSymbolsinBotTwo = await placeOrder.removePositionsFromSymbolData(symBolData, uniquePositionSymbolsBotTwo).slice(0, numberOfAvailableOrdersBotTwo)
-        //         let continueOrderinBotTwo = await orderSystem.cancelExistingOrders(orderableSymbolsinBotTwo, secondBinance, getUSDTBalanceBotTwo)
-        //     } catch (error) {
-        //         console.log('error placing order in bot 2');
-        //     }
-
-        // } else console.log('positions in bot 2 are filled');
+  
 
 
 
-        // for (pos of allPositionsBotTwo) {
-        //     orderSystem.setStopLossTakeProfit(pos, secondBinance)
-        // }
-
-          // console.log("let's go for bot 2");
-
-        // let allPositionsBotTwo = await secondBinance.fetchPositions()
-        // let getUSDTBalanceBotTwo = await (await secondBinance.fetchBalance()).info.availableBalance
-        // let positionSymbolsBotTwo = allPositionsBotTwo.map(obj => obj.info.symbol)
-        // let uniquePositionSymbolsBotTwo = [...new Set(positionSymbolsBotTwo) ]
-        // let numberOfAvailableOrdersBotTwo = 8 - uniquePositionSymbolsBotTwo.length 
+    

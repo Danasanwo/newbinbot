@@ -60,7 +60,7 @@ async function setStopLossTakeProfit(pos, binance) {
 
 async function orderSymbol(sym, side, binance, price, getUSDTBalance) {
     try {
-        let trailingStopPercentage = 0.2
+        let trailingStopPercentage = 2
         let leverage =  await binance.fetchLeverages(sym)
         let baseOrderAmount = ((0.02 * getUSDTBalance) * 20)/ price
 
@@ -89,7 +89,7 @@ async function cancelExistingOrders(markets, binance, getUSDTBalance) {
 
         for (market of markets) {
              let marketSymbol =await market[0]
-             let marketSide = await market[1] >= 0 ? 'sell': 'buy'
+             let marketSide = await market[1] >= 0 ? 'buy': 'sell'
              let currentPrice = await market[2]
              let openOrders = await binance.fetchOpenOrders(marketSymbol)
              
