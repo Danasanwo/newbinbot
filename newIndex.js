@@ -13,6 +13,7 @@ const combineAlgo = require('./compileAlgo')
 const placeOrder = require('./placeOrders')
 const orderSystem = require('./botTwoOrderSystem')
 const newOrderSystem = require('./newOrderSystem')
+const newRiskManager = require('./redoRiskManagement')
 
 
 async function mainBot() {
@@ -20,7 +21,10 @@ async function mainBot() {
 
         let symBolData = await combineAlgo.compileAlgo(binance)
 
-        console.log(symBolData);
+        let symbolData4hRSI = symBolData.sort((a, b) => Math.abs(b[3]) - Math.abs(a[3])).filter((a) => a[3] > 73 || a[3] < 20 );
+
+        let symbolData1dRSI = symBolData.sort((a, b) => Math.abs(b[4]) - Math.abs(a[4])).filter((a) => a[4] > 71 || a[3] < 20 );
+
 
 
         console.log("let's go for bot 1");
@@ -31,11 +35,9 @@ async function mainBot() {
         let positionSymbols = allPositions.map(obj => obj.info.symbol)
         let uniquePositionSymbols = [...new Set(positionSymbols) ]
         let numberOfAvailableOrders = 100 - uniquePositionSymbols.length 
-
     
         for (pos of allPositions) {
-            console.log(pos);
-            riskManager.setStopLossTakeProfit(pos, binance)
+            newRiskManager.setStopLossTakeProfit(pos, binance, symBolData)
         }
 
         if (numberOfAvailableOrders > 0) {
@@ -43,22 +45,50 @@ async function mainBot() {
             try {
 
                 let orderableSymbols =await placeOrder.removePositionsFromSymbolData(symBolData, uniquePositionSymbols).slice(0, numberOfAvailableOrders)
-
-
                 
             } catch (error) {
                 console.log('error placing order in bot 1');
             }
        
-            // try {
-            //     let orderableSymbols =await placeOrder.removePositionsFromSymbolData(symBolData, uniquePositionSymbols).slice(0, numberOfAvailableOrders)
-            //     let continueOrder = await placeOrder.cancelExistingOrders(orderableSymbols, binance, getUSDTBalance)
-            // } catch (error) {
-            //     console.log('error placing order in bot 1');
-            // }
+            try {
+                let orderableSymbols = []
+                // let compileOrderableSymbols = await placeOrder.removePositionsFromSymbolData(symBolData, uniquePositionSymbols).slice(0, numberOfAvailableOrders)
+                let rsi4hOrderableSymbols = await placeOrder.removePositionsFromSymbolData(symbolData4hRSI, uniquePositionSymbols)
+                let rsi1dOrderableSymbols = await placeOrder.removePositionsFromSymbolData(symbolData1dRSI, uniquePositionSymbols)
+
+                
+                await placeOrder.cancelExistingOrders(rsi4hOrderableSymbols, binance, getUSDTBalance)
+                await placeOrder.cancelExistingOrders(rsi1dOrderableSymbols, binance, getUSDTBalance)
+
+            } catch (error) {
+                console.log('error placing order in bot 1');
+            }
        
 
         } else console.log('positions in bot 1 are filled');
+
+
+
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+const binance = new ccxt.binanceusdm({
+    apiKey: process.env.BINANCE_API_KEY,
+    secret: process.env.BINANCE_SECRET_KEY
+})
+
+const secondBinance = new ccxt.binanceusdm({
+    apiKey: process.env.BINANCE_TWO_API_KEY,
+    secret: process.env.BINANCE_TWO_SECRET_KEY
+})
+
+
+mainBot()
+
+setInterval(mainBot, 1200000)
+
 
 
 
@@ -85,36 +115,9 @@ async function mainBot() {
         //     }
 
         // } else console.log('positions in bot 2 are filled');
+
+        // let continueOrder =
      
-
-
-
-
-
-
-
-  
-    
-
-    } catch (error) {
-        console.log(error);
-    }
-}
-
-const binance = new ccxt.binanceusdm({
-    apiKey: process.env.BINANCE_API_KEY,
-    secret: process.env.BINANCE_SECRET_KEY
-})
-
-const secondBinance = new ccxt.binanceusdm({
-    apiKey: process.env.BINANCE_TWO_API_KEY,
-    secret: process.env.BINANCE_TWO_SECRET_KEY
-})
-
-
-mainBot()
-
-setInterval(mainBot, 1200000)
 
 
 

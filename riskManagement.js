@@ -1,7 +1,12 @@
+
+
 async function setStopLossTakeProfit(pos, binance) {
     try {
+
+
         // Fetch open orders for the position's symbol
         let getPositionOrders = await binance.fetchOpenOrders(pos.info.symbol);
+
 
         let side = pos.side === 'short' || pos.side === 'sell' ? 'buy' : 'sell';
         let stopLossPrice = await pos.side === 'short' || pos.side === 'sell' ? (pos.entryPrice + (0.2 * pos.entryPrice )): (pos.entryPrice - (0.2 * pos.entryPrice ))
