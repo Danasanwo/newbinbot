@@ -39,13 +39,13 @@ async function cancelExistingOrders(markets, binance, getUSDTBalance) {
             if (openOrders.length == 0) {
             
 
-                if (rsi4h > 70 || rsi4h < 20) {
+                if (rsi4h > 70 || rsi4h < 30) {
 
                     marketSide = rsi4h > 70 ? 'sell': 'buy'
 
                     await orderSymbol(marketSymbol, marketSide, binance, currentPrice, getUSDTBalance)
 
-                } else if ((rsi1d > 70 || rsi1d < 20)) {
+                } else if ((rsi1d > 70 || rsi1d < 30)) {
                     marketSide = rsi1d > 70 ? 'sell': 'buy'
 
                     await orderSymbol(marketSymbol, marketSide, binance, currentPrice, getUSDTBalance)
