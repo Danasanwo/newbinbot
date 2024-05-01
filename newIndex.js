@@ -21,9 +21,9 @@ async function mainBot() {
 
         let symBolData = await combineAlgo.compileAlgo(binance)
 
-        let symbolData4hRSI = symBolData.sort((a, b) => Math.abs(b[3]) - Math.abs(a[3])).filter((a) => a[3] > 73 || a[3] < 22 );
+        let symbolData4hRSI = symBolData.sort((a, b) => Math.abs(b[3]) - Math.abs(a[3])).filter((a) => a[3] > 73 || a[3] < 25 );
 
-        let symbolData1dRSI = symBolData.sort((a, b) => Math.abs(b[4]) - Math.abs(a[4])).filter((a) => a[4] > 71 || a[3] < 22 );
+        let symbolData1dRSI = symBolData.sort((a, b) => Math.abs(b[4]) - Math.abs(a[4])).filter((a) => a[4] > 71 || a[3] < 25 );
 
 
 
@@ -34,7 +34,7 @@ async function mainBot() {
         let getUSDTBalance = await (await binance.fetchBalance()).info.availableBalance
         let positionSymbols = allPositions.map(obj => obj.info.symbol)
         let uniquePositionSymbols = [...new Set(positionSymbols) ]
-        let numberOfAvailableOrders = 100 - uniquePositionSymbols.length 
+        let numberOfAvailableOrders = 20 - uniquePositionSymbols.length 
     
         for (pos of allPositions) {
             newRiskManager.setStopLossTakeProfit(pos, binance, symBolData)
