@@ -59,7 +59,7 @@ async function setStopLossTakeProfit(pos, binance, symbolData) {
 
                          let reSide = positionSide === 'short' || positionSide === 'sell' ? 'sell' : 'buy';
                         
-                         await binance.createTrailingPercentOrder(positionSymbol, 'trailing_stop', reSide, (1.75 * positionContracts), undefined, 3);
+                         await binance.createTrailingPercentOrder(positionSymbol, 'trailing_stop', reSide``, (1.75 * positionContracts), undefined, 3);
                          console.log(`add more for ${positionSymbol}`);
                     }
                 }
