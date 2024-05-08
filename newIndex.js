@@ -25,6 +25,10 @@ async function mainBot() {
 
         let symbolData1dRSI = symBolData.sort((a, b) => Math.abs(b[4]) - Math.abs(a[4])).filter((a) => a[4] > 71 || a[3] < 25 );
 
+        let symbolData4hRSI80 = symBolData.sort((a, b) => Math.abs(b[3]) - Math.abs(a[3])).filter((a) => a[3] > 81 || a[3] < 19 );
+
+        let symbolData1dRSI80 = symBolData.sort((a, b) => Math.abs(b[4]) - Math.abs(a[4])).filter((a) => a[4] > 81 || a[3] < 19 );
+
 
 
         console.log("let's go for bot 1");
@@ -34,25 +38,35 @@ async function mainBot() {
         let getUSDTBalance = await (await binance.fetchBalance()).info.availableBalance
         let positionSymbols = allPositions.map(obj => obj.info.symbol)
         let uniquePositionSymbols = [...new Set(positionSymbols) ]
-        let numberOfAvailableOrders = 10 - uniquePositionSymbols.length 
+        let numberOfAvailableOrders = 7 - uniquePositionSymbols.length 
+        let numberOfAvailableOrders80 = 50 - uniquePositionSymbols.length
     
+
+
         for (pos of allPositions) {
             newRiskManager.setStopLossTakeProfit(pos, binance, symBolData)
         }
 
-        if (numberOfAvailableOrders > 0) {
-
+        if (numberOfAvailableOrders80 > 0) {
             try {
-
-                let orderableSymbols =await placeOrder.removePositionsFromSymbolData(symBolData, uniquePositionSymbols).slice(0, numberOfAvailableOrders)
+                let rsi4h80OrderableSymbols = await placeOrder.removePositionsFromSymbolData(symbolData4hRSI80, uniquePositionSymbols)
+                let rsi1d80OrderableSymbols =  await placeOrder.removePositionsFromSymbolData(symbolData1dRSI80, uniquePositionSymbols)
+    
+                   
+                await placeOrder.cancelExistingOrders(rsi4h80OrderableSymbols, binance, getUSDTBalance)
+                await placeOrder.cancelExistingOrders(rsi1d80OrderableSymbols, binance, getUSDTBalance)
                 
             } catch (error) {
-                console.log('error placing order in bot 1');
+                console.log('error placing order in bot 1 - rsi 80');
             }
        
+
+        } else console.log('positions in bot 1 for rsi 80 are filled');
+
+        if (numberOfAvailableOrders > 0) {
+
+    
             try {
-                let orderableSymbols = []
-                // let compileOrderableSymbols = await placeOrder.removePositionsFromSymbolData(symBolData, uniquePositionSymbols).slice(0, numberOfAvailableOrders)
                 let rsi4hOrderableSymbols = await placeOrder.removePositionsFromSymbolData(symbolData4hRSI, uniquePositionSymbols)
                 let rsi1dOrderableSymbols = await placeOrder.removePositionsFromSymbolData(symbolData1dRSI, uniquePositionSymbols)
 
@@ -117,6 +131,19 @@ setInterval(mainBot, 1200000)
         // } else console.log('positions in bot 2 are filled');
 
         // let continueOrder =
+
+                // try {
+
+            //     let orderableSymbols =await placeOrder.removePositionsFromSymbolData(symBolData, uniquePositionSymbols).slice(0, numberOfAvailableOrders)
+                
+            // } catch (error) {
+            //     console.log('error placing order in bot 1');
+            // }
+
+    
+
+                // let orderableSymbols = []
+                // let compileOrderableSymbols = await placeOrder.removePositionsFromSymbolData(symBolData, uniquePositionSymbols).slice(0, numberOfAvailableOrders)
      
 
 
