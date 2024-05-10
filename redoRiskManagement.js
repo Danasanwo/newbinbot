@@ -59,7 +59,7 @@ async function setStopLossTakeProfit(pos, binance, symbolData) {
 
                          let reSide = positionSide === 'short' || positionSide === 'sell' ? 'sell' : 'buy';
                         
-                         await binance.createTrailingPercentOrder(positionSymbol, 'trailing_stop', reSide``, (1.75 * positionContracts), undefined, 3);
+                         await binance.createTrailingPercentOrder(positionSymbol, 'trailing_stop', reSide``, (1.75 * positionContracts), undefined, 5);
                          console.log(`add more for ${positionSymbol}`);
                     }
                 }
@@ -68,7 +68,7 @@ async function setStopLossTakeProfit(pos, binance, symbolData) {
             if (positionSide === 'long' || positionSide === 'buy') {
                 if (rsi1d < 20 || rsi4h < 20) {
                     if (unrealizedPnl < stopLossThreshold) {
-                         await binance.createTrailingPercentOrder(positionSymbol, 'trailing_stop', positionSide, (1.75 * positionContracts), undefined, 3);
+                         await binance.createTrailingPercentOrder(positionSymbol, 'trailing_stop', positionSide, (1.75 * positionContracts), undefined, 5);
                          console.log(`add more for ${positionSymbol}`);
                     }
                 }
