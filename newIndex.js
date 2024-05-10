@@ -21,13 +21,13 @@ async function mainBot() {
 
         let symBolData = await combineAlgo.compileAlgo(binance)
 
-        let symbolData4hRSI = symBolData.sort((a, b) => Math.abs(b[3]) - Math.abs(a[3])).filter((a) => a[3] > 74 || a[3] < 27);
+        let symbolData4hRSI = symBolData.sort((a, b) => Math.abs(b[3]) - Math.abs(a[3])).filter((a) => a[3] > 74 || a[3] < 24);
 
-        let symbolData1dRSI = symBolData.sort((a, b) => Math.abs(b[4]) - Math.abs(a[4])).filter((a) => a[4] > 71 || a[3] < 29 );
+        let symbolData1dRSI = symBolData.sort((a, b) => Math.abs(b[4]) - Math.abs(a[4])).filter((a) => a[4] > 71 || a[3] < 27 );
 
         let symbolData4hRSI80 = symBolData.sort((a, b) => Math.abs(b[3]) - Math.abs(a[3])).filter((a) => a[3] > 81 || a[3] < 19 );
 
-        let symbolData1dRSI80 = symBolData.sort((a, b) => Math.abs(b[4]) - Math.abs(a[4])).filter((a) => a[4] > 81 || a[3] < 19 );
+        let symbolData1dRSI80 = symBolData.sort((a, b) => Math.abs(b[4]) - Math.abs(a[4])).filter((a) => a[4] > 81 || a[3] < 20);
 
 
 
