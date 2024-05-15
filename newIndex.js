@@ -23,14 +23,13 @@ async function mainBot() {
 
         let symbolData4hRSI = symBolData.sort((a, b) => Math.abs(b[3]) - Math.abs(a[3])).filter((a) => a[3] > 74 || a[3] < 23);
 
-        let symbolData1dRSI = symBolData.sort((a, b) => Math.abs(b[4]) - Math.abs(a[4])).filter((a) => a[4] > 71 || a[3] < 27 );
+        let symbolData1dRSI = symBolData.sort((a, b) => Math.abs(b[4]) - Math.abs(a[4])).filter((a) => a[4] > 71 || a[3] < 25);
 
         let symbolData4hRSI80 = symBolData.sort((a, b) => Math.abs(b[3]) - Math.abs(a[3])).filter((a) => a[3] > 81 || a[3] < 18);
 
         let symbolData1dRSI80 = symBolData.sort((a, b) => Math.abs(b[4]) - Math.abs(a[4])).filter((a) => a[4] > 81 || a[3] < 20);
 
-
-
+        
         
 
         console.log("let's go for bot 1");
