@@ -14,7 +14,6 @@ async function setStopLossTakeProfit(pos, binance, symbolData) {
 
         let getPositionOrders = await binance.fetchOpenOrders(positionSymbol);
 
-        console.log(getPositionOrders);
 
         let getSymbolData = await placeOrder.findArrayWithElement(symbolData, positionSymbol)
 
