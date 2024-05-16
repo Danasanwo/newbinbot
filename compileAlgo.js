@@ -10,60 +10,67 @@ async function compileAlgo(binance) {
     const symBolData = [];
 
     await Promise.all(getAllMarket.map(async symbol => {
-        const [historicalDataOneHour, historicalDataFourHour, historicalDataOneDay] = await Promise.all([
-            binance.fetchOHLCV(symbol, '1h'),
-            binance.fetchOHLCV(symbol, '4h'),
-            binance.fetchOHLCV(symbol, '1d')
-        ]);
-
-        // Remove the most recent data from each historical dataset
-        const [trimmedDataOneHour, trimmedDataFourHour, trimmedDataOneDay] = [
-            historicalDataOneHour.slice(0, -24),
-            historicalDataFourHour.slice(0, -4),
-            historicalDataOneDay.slice(0, -1)
-        ];
-
-        const [rsi1h, rsi4h, rsi1d] = await Promise.all([
-            calculateRSI.calculateRSI(historicalDataOneHour),
-            calculateRSI.calculateRSI(historicalDataFourHour),
-            calculateRSI.calculateRSI(historicalDataOneDay)
-        ])
-
-        const [oneHourCandlesticks, fourHourCandlesticks, oneDayCandlesticks, yesterdayCandleSticks] = await Promise.all([
-            random.analyseCandlesticks(historicalDataOneHour),
-            random.analyseCandlesticks(historicalDataFourHour),
-            random.analyseCandlesticks(historicalDataOneDay),
-            random.analyseCandlesticks(trimmedDataOneDay)
-        ]);
-
+        try {
+            const [historicalDataOneHour, historicalDataFourHour, historicalDataOneDay] = await Promise.all([
+                binance.fetchOHLCV(symbol, '1h'),
+                binance.fetchOHLCV(symbol, '4h'),
+                binance.fetchOHLCV(symbol, '1d')
+            ]);
+    
+            // Remove the most recent data from each historical dataset
+            const [trimmedDataOneHour, trimmedDataFourHour, trimmedDataOneDay] = [
+                historicalDataOneHour.slice(0, -24),
+                historicalDataFourHour.slice(0, -4),
+                historicalDataOneDay.slice(0, -1)
+            ];
+    
+            const [rsi1h, rsi4h, rsi1d] = await Promise.all([
+                calculateRSI.calculateRSI(historicalDataOneHour),
+                calculateRSI.calculateRSI(historicalDataFourHour),
+                calculateRSI.calculateRSI(historicalDataOneDay)
+            ])
+    
+            const [oneHourCandlesticks, fourHourCandlesticks, oneDayCandlesticks, yesterdayCandleSticks] = await Promise.all([
+                random.analyseCandlesticks(historicalDataOneHour),
+                random.analyseCandlesticks(historicalDataFourHour),
+                random.analyseCandlesticks(historicalDataOneDay),
+                random.analyseCandlesticks(trimmedDataOneDay)
+            ]);
+    
+        
+    
+    
+            const [oneHourIndicators, fourHourIndicators, oneDayIndicators, yesterdayIndicators] = await Promise.all([
+                techApi.indicate(historicalDataOneHour),
+                techApi.indicate(historicalDataFourHour),
+                techApi.indicate(historicalDataOneDay),
+                techApi.indicate(trimmedDataOneDay)
+            ]);
+    
+            const fibonnaci = await fibb.analyseFibonacci(historicalDataOneDay);
+    
+            const [prioritizeOneHour, prioritizeFourHours, prioritizeOneDay, prioritizeYesterday] = await Promise.all([
+                prioritizer.prioritizeMarkets(oneHourCandlesticks, oneHourIndicators, historicalDataOneHour),
+                prioritizer.prioritizeMarkets(fourHourCandlesticks, fourHourIndicators, historicalDataFourHour),
+                prioritizer.prioritizeMarkets(oneDayCandlesticks, oneDayIndicators, historicalDataOneDay),
+                prioritizer.prioritizeMarkets(yesterdayCandleSticks, yesterdayIndicators, trimmedDataOneDay)
+            ]);
+    
+            const combinePri = await prioritizer.combineTimePeriod(prioritizeOneHour, prioritizeFourHours, prioritizeOneDay, prioritizeYesterday);
+    
+            let fourHourCandle = fourHourCandlesticks.bullish - fourHourCandlesticks.bearish
+            let oneDayCandle = oneDayCandlesticks.bullish - oneDayCandlesticks.bullish
+    
+            // symBolData.push([symbol, combinePri, historicalDataOneHour[historicalDataOneHour.length - 1][4], `RSI4h: ${fourHourIndicators.RSI}`, `RSI1d: ${oneDayIndicators.RSI}`]);
+    
+            symBolData.push([symbol, combinePri, historicalDataOneHour[historicalDataOneHour.length - 1][4], rsi4h, rsi1d, fourHourCandlesticks, oneDayCandlesticks] );
     
 
-
-        const [oneHourIndicators, fourHourIndicators, oneDayIndicators, yesterdayIndicators] = await Promise.all([
-            techApi.indicate(historicalDataOneHour),
-            techApi.indicate(historicalDataFourHour),
-            techApi.indicate(historicalDataOneDay),
-            techApi.indicate(trimmedDataOneDay)
-        ]);
-
-        const fibonnaci = await fibb.analyseFibonacci(historicalDataOneDay);
-
-        const [prioritizeOneHour, prioritizeFourHours, prioritizeOneDay, prioritizeYesterday] = await Promise.all([
-            prioritizer.prioritizeMarkets(oneHourCandlesticks, oneHourIndicators, historicalDataOneHour),
-            prioritizer.prioritizeMarkets(fourHourCandlesticks, fourHourIndicators, historicalDataFourHour),
-            prioritizer.prioritizeMarkets(oneDayCandlesticks, oneDayIndicators, historicalDataOneDay),
-            prioritizer.prioritizeMarkets(yesterdayCandleSticks, yesterdayIndicators, trimmedDataOneDay)
-        ]);
-
-        const combinePri = await prioritizer.combineTimePeriod(prioritizeOneHour, prioritizeFourHours, prioritizeOneDay, prioritizeYesterday);
-
-        let fourHourCandle = fourHourCandlesticks.bullish - fourHourCandlesticks.bearish
-        let oneDayCandle = oneDayCandlesticks.bullish - oneDayCandlesticks.bullish
-
-        // symBolData.push([symbol, combinePri, historicalDataOneHour[historicalDataOneHour.length - 1][4], `RSI4h: ${fourHourIndicators.RSI}`, `RSI1d: ${oneDayIndicators.RSI}`]);
-
-        symBolData.push([symbol, combinePri, historicalDataOneHour[historicalDataOneHour.length - 1][4], rsi4h, rsi1d, fourHourCandlesticks, oneDayCandlesticks] );
-
+            
+        } catch (error) {
+            console.log(`could not get algorithmic value for ${symbol}`);
+        }
+   
     }));
 
     symBolData.sort((a, b) => Math.abs(b[1]) - Math.abs(a[1]));
