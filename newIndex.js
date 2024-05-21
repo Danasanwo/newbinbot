@@ -21,13 +21,13 @@ async function mainBot() {
 
         let symBolData = await combineAlgo.compileAlgo(binance)
 
-        let symbolData4hRSI = symBolData.sort((a, b) => Math.abs(b[3]) - Math.abs(a[3])).filter((a) => a[3] > 74 || a[3] < 23);
+        let symbolData4hRSI = symBolData.sort((a, b) => Math.abs(b[3]) - Math.abs(a[3])).filter((a) => a[3] > 73 || a[3] < 23);
 
         let symbolData1dRSI = symBolData.sort((a, b) => Math.abs(b[4]) - Math.abs(a[4])).filter((a) => a[4] > 71 || a[3] < 25);
 
         let symbolData4hRSI80 = symBolData.sort((a, b) => Math.abs(b[3]) - Math.abs(a[3])).filter((a) => a[3] > 81 || a[3] < 18);
 
-        let symbolData1dRSI80 = symBolData.sort((a, b) => Math.abs(b[4]) - Math.abs(a[4])).filter((a) => a[4] > 81 || a[3] < 20);
+        let symbolData1dRSI80 = symBolData.sort((a, b) => Math.abs(b[4]) - Math.abs(a[4])).filter((a) => a[4] > 80 || a[3] < 20);
 
         
         
@@ -40,7 +40,7 @@ async function mainBot() {
         let positionSymbols = allPositions.map(obj => obj.info.symbol)
         let uniquePositionSymbols = [...new Set(positionSymbols) ]
         let numberOfAvailableOrders = 7 - uniquePositionSymbols.length 
-        let numberOfAvailableOrders80 = 50 - uniquePositionSymbols.length
+        let numberOfAvailableOrders80 = 10 - uniquePositionSymbols.length
     
 
 
@@ -50,6 +50,9 @@ async function mainBot() {
 
         if (numberOfAvailableOrders80 > 0) {
             try {
+
+                console.log('rsi80s');
+
                 let rsi4h80OrderableSymbols = await placeOrder.removePositionsFromSymbolData(symbolData4hRSI80, uniquePositionSymbols)
                 let rsi1d80OrderableSymbols =  await placeOrder.removePositionsFromSymbolData(symbolData1dRSI80, uniquePositionSymbols)
     
@@ -68,6 +71,8 @@ async function mainBot() {
 
     
             try {
+
+                console.log('rsi70s');
                 let rsi4hOrderableSymbols = await placeOrder.removePositionsFromSymbolData(symbolData4hRSI, uniquePositionSymbols)
                 let rsi1dOrderableSymbols = await placeOrder.removePositionsFromSymbolData(symbolData1dRSI, uniquePositionSymbols)
 
