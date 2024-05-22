@@ -56,6 +56,9 @@ async function mainBot() {
                 let rsi4h80OrderableSymbols = await placeOrder.removePositionsFromSymbolData(symbolData4hRSI80, uniquePositionSymbols)
                 let rsi1d80OrderableSymbols =  await placeOrder.removePositionsFromSymbolData(symbolData1dRSI80, uniquePositionSymbols)
     
+                rsi4h80OrderableSymbols.slice(0, numberOfAvailableOrders80)
+                rsi1d80OrderableSymbols.slice(0, numberOfAvailableOrders80)
+
                    
                 await placeOrder.cancelExistingOrders(rsi4h80OrderableSymbols, binance, getUSDTBalance)
                 await placeOrder.cancelExistingOrders(rsi1d80OrderableSymbols, binance, getUSDTBalance)
@@ -76,7 +79,9 @@ async function mainBot() {
                 let rsi4hOrderableSymbols = await placeOrder.removePositionsFromSymbolData(symbolData4hRSI, uniquePositionSymbols)
                 let rsi1dOrderableSymbols = await placeOrder.removePositionsFromSymbolData(symbolData1dRSI, uniquePositionSymbols)
 
-                
+                rsi4hOrderableSymbols.slice(0, numberOfAvailableOrders)
+                rsi1dOrderableSymbols.slice(0, numberOfAvailableOrders)
+
                 await placeOrder.cancelExistingOrders(rsi4hOrderableSymbols, binance, getUSDTBalance)
                 await placeOrder.cancelExistingOrders(rsi1dOrderableSymbols, binance, getUSDTBalance)
 
