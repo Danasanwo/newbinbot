@@ -47,20 +47,21 @@ async function cancelExistingOrders(markets, binance, getUSDTBalance) {
 
                     marketSide = rsi4h > 70 ? 'sell': 'buy'
 
-                    let tradeAmount = 0.5
+                    let tradeAmount = 0.25
 
                     if (rsi4h > 90) tradeAmount = 1
-                    else if (rsi4h > 80) tradeAmount = 0.75
+                    else if (rsi4h > 80) tradeAmount = 0.5
 
                     await orderSymbol(marketSymbol, marketSide, binance, currentPrice, getUSDTBalance, tradeAmount)
 
                 } else if ((rsi1d > 70 || rsi1d < 30)) {
                     marketSide = rsi1d > 70 ? 'sell': 'buy'
 
-                    let tradeAmount = 0.8
+                    let tradeAmount = 0.75
 
-                    if (rsi4h > 90) tradeAmount = 1.5
-                    else if (rsi4h > 80) tradeAmount = 1
+                    if (rsi1d > 90) tradeAmount = 2
+                    else if (rsi1d > 85) tradeAmount = 1.5
+                    else if (rsi1d > 80) tradeAmount = 1
 
                     await orderSymbol(marketSymbol, marketSide, binance, currentPrice, getUSDTBalance, tradeAmount)
 
