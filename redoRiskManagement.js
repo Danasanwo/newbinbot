@@ -52,11 +52,11 @@ async function setStopLossTakeProfit(pos, binance, symbolData) {
 
             try {
                 if (unrealizedPnl >= (0.2 * initialMargin)) {
-                    await binance.createStopLossOrder(positionSymbol, "STOP_LOSS_LIMIT", side, positionContracts, entryPrice)
+                    await binance.createStopLossOrder(positionSymbol, 'STOP_MARKET', side, positionContracts, entryPrice)
                     console.log(`stop loss for ${positionSymbol}`);
                 }
             } catch (error) {
-                console.log(`error`);
+                console.log(error.message);
             }
 
        
@@ -117,9 +117,12 @@ async function setStopLossTakeProfit(pos, binance, symbolData) {
         }
 
         
+   
+        
 
         if (getPositionOrders.length > 2) {
-            for (let index = 0; index < array.length; index++) {
+            for (let index = 0; index < getPositionOrders.length; index++) {
+
                 await binance.cancelOrder(getPositionOrders[index].id, positionSymbol);
             }
 
