@@ -21,13 +21,45 @@ async function mainBot() {
 
         let symBolData = await combineAlgo.compileAlgo(binance)
 
-        let symbolData4hRSI = symBolData.sort((a, b) => Math.abs(b[3]) - Math.abs(a[3])).filter((a) => a[3] > 73 || a[3] < 23);
+        let combined4hRSIArray = symBolData.map(a => a[3]).filter(element => typeof element === 'number')
+        let combined4hRSIValue = combined4hRSIArray.length > 0 ? ((combined4hRSIArray.reduce((acc, curr) => acc + curr, 0))/combined4hRSIArray.length):0
+    
 
-        let symbolData1dRSI = symBolData.sort((a, b) => Math.abs(b[4]) - Math.abs(a[4])).filter((a) => a[4] > 71 || a[3] < 25);
+        let combined1dRSIArray = symBolData.map(a => a[4]).filter(element => typeof element === 'number')
+        let combined1dRSIValue = combined1dRSIArray.length > 0 ? ((combined1dRSIArray.reduce((acc, curr) => acc + curr, 0))/combined1dRSIArray.length):0
 
-        let symbolData4hRSI80 = symBolData.sort((a, b) => Math.abs(b[3]) - Math.abs(a[3])).filter((a) => a[3] > 81 || a[3] < 18);
+        let rsi4hUpperlimit = combined4hRSIValue && combined4hRSIValue + 25 > 73 ? combined4hRSIValue + 25 : 73
+        let rsi4hLowerLimit = combined4hRSIValue && combined4hRSIValue - 20 < 23 ? combined4hRSIValue - 20 : 23
 
-        let symbolData1dRSI80 = symBolData.sort((a, b) => Math.abs(b[4]) - Math.abs(a[4])).filter((a) => a[4] > 80 || a[3] < 20);
+        let rsi1dUpperLimit = combined1dRSIValue && combined1dRSIValue + 22 > 71 ? combined1dRSIValue + 22 : 71
+        let rsi1dLowerLimit  = combined4hRSIValue && combined1dRSIValue - 17 < 25 ? combined1dRSIValue - 17: 25
+
+        console.log(rsi4hUpperlimit,rsi4hLowerLimit, rsi1dUpperLimit, rsi1dLowerLimit);
+
+
+        // Lower RSIs 
+
+        let symbolData4hRSI = symBolData.sort((a, b) => Math.abs(b[3]) - Math.abs(a[3])).filter((a) => a[3] > rsi4hUpperlimit);
+
+        let symbolData4hRSI20 = symBolData.sort((a, b) => Math.abs(a[3]) - Math.abs(b[3])).filter((a) => a[3] < rsi4hLowerLimit);
+
+        let symbolData1dRSI = symBolData.sort((a, b) => Math.abs(b[4]) - Math.abs(a[4])).filter((a) => a[4] > rsi1dUpperLimit);
+
+        let symbolData1dRSI20 = symBolData.sort((a, b) => Math.abs(a[4]) - Math.abs(b[4])).filter((a) => a[3] < rsi1dLowerLimit);
+
+
+        // higher RSIS
+
+        let symbolData4hRSI80 = symBolData.sort((a, b) => Math.abs(b[3]) - Math.abs(a[3])).filter((a) => a[3] > (rsi4hUpperlimit + 8));
+
+        let symbolData4hRSI8020 = symBolData.sort((a, b) => Math.abs(a[3]) - Math.abs(b[3])).filter((a) =>  a[3] < (rsi4hLowerLimit - 5));
+
+        let symbolData1dRSI80 = symBolData.sort((a, b) => Math.abs(b[4]) - Math.abs(a[4])).filter((a) => a[4] > (rsi1dUpperLimit + 8))
+
+        let symbolData1dRSI8020 = symBolData.sort((a, b) => Math.abs(a[3]) - Math.abs(b[3])).filter((a) =>  a[3] < (rsi1dLowerLimit - 5));
+
+
+
 
         
         
@@ -39,7 +71,7 @@ async function mainBot() {
         let getUSDTBalance = await (await binance.fetchBalance()).info.availableBalance
         let positionSymbols = allPositions.map(obj => obj.info.symbol)
         let uniquePositionSymbols = [...new Set(positionSymbols) ]
-        let numberOfAvailableOrders = 4 - uniquePositionSymbols.length 
+        let numberOfAvailableOrders = 7 - uniquePositionSymbols.length 
         let numberOfAvailableOrders80 = 10 - uniquePositionSymbols.length
     
 
@@ -55,13 +87,19 @@ async function mainBot() {
 
                 let rsi4h80OrderableSymbols = await placeOrder.removePositionsFromSymbolData(symbolData4hRSI80, uniquePositionSymbols)
                 let rsi1d80OrderableSymbols =  await placeOrder.removePositionsFromSymbolData(symbolData1dRSI80, uniquePositionSymbols)
+                let rsi4h8020OrderableSymbols = await placeOrder.removePositionsFromSymbolData(symbolData4hRSI8020, uniquePositionSymbols)
+                let rsi1d8020OrderableSymbols = await placeOrder.removePositionsFromSymbolData(symbolData1dRSI8020, uniquePositionSymbols)
     
                 rsi4h80OrderableSymbols.slice(0, numberOfAvailableOrders80)
                 rsi1d80OrderableSymbols.slice(0, numberOfAvailableOrders80)
+                rsi4h8020OrderableSymbols.slice(0, numberOfAvailableOrders80)
+                rsi1d8020OrderableSymbols.slice(0, numberOfAvailableOrders80)
 
                    
                 await placeOrder.cancelExistingOrders(rsi4h80OrderableSymbols, binance, getUSDTBalance)
                 await placeOrder.cancelExistingOrders(rsi1d80OrderableSymbols, binance, getUSDTBalance)
+                await placeOrder.cancelExistingOrders(rsi4h8020OrderableSymbols, binance, getUSDTBalance)
+                await placeOrder.cancelExistingOrders(rsi1d8020OrderableSymbols, binance, getUSDTBalance)
                 
             } catch (error) {
                 console.log('error placing order in bot 1 - rsi 80');
@@ -78,12 +116,18 @@ async function mainBot() {
                 console.log('rsi70s');
                 let rsi4hOrderableSymbols = await placeOrder.removePositionsFromSymbolData(symbolData4hRSI, uniquePositionSymbols)
                 let rsi1dOrderableSymbols = await placeOrder.removePositionsFromSymbolData(symbolData1dRSI, uniquePositionSymbols)
+                let rsi4h20OrderableSymbols = await placeOrder.removePositionsFromSymbolData(symbolData4hRSI20, uniquePositionSymbols)
+                let rsi1d20OrderableSymbols = await placeOrder.removePositionsFromSymbolData(symbolData1dRSI20, uniquePositionSymbols)
 
                 rsi4hOrderableSymbols.slice(0, numberOfAvailableOrders)
                 rsi1dOrderableSymbols.slice(0, numberOfAvailableOrders)
+                rsi4h20OrderableSymbols.slice(0, numberOfAvailableOrders)
+                rsi1d20OrderableSymbols.slice(0, numberOfAvailableOrders)
 
                 await placeOrder.cancelExistingOrders(rsi4hOrderableSymbols, binance, getUSDTBalance)
                 await placeOrder.cancelExistingOrders(rsi1dOrderableSymbols, binance, getUSDTBalance)
+                await placeOrder.cancelExistingOrders(rsi4h20OrderableSymbols, binance, getUSDTBalance)
+                await placeOrder.cancelExistingOrders(rsi1d20OrderableSymbols, binance, getUSDTBalance)
 
             } catch (error) {
                 console.log('error placing order in bot 1');
