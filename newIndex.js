@@ -80,61 +80,61 @@ async function mainBot() {
             newRiskManager.setStopLossTakeProfit(pos, binance, symBolData)
         }
 
-        // if (numberOfAvailableOrders80 > 0) {
-        //     try {
+        if (numberOfAvailableOrders80 > 0) {
+            try {
 
-        //         console.log('rsi80s');
+                console.log('rsi80s');
 
-        //         let rsi4h80OrderableSymbols = await placeOrder.removePositionsFromSymbolData(symbolData4hRSI80, uniquePositionSymbols)
-        //         let rsi1d80OrderableSymbols =  await placeOrder.removePositionsFromSymbolData(symbolData1dRSI80, uniquePositionSymbols)
-        //         let rsi4h8020OrderableSymbols = await placeOrder.removePositionsFromSymbolData(symbolData4hRSI8020, uniquePositionSymbols)
-        //         let rsi1d8020OrderableSymbols = await placeOrder.removePositionsFromSymbolData(symbolData1dRSI8020, uniquePositionSymbols)
+                let rsi4h80OrderableSymbols = await placeOrder.removePositionsFromSymbolData(symbolData4hRSI80, uniquePositionSymbols)
+                let rsi1d80OrderableSymbols =  await placeOrder.removePositionsFromSymbolData(symbolData1dRSI80, uniquePositionSymbols)
+                let rsi4h8020OrderableSymbols = await placeOrder.removePositionsFromSymbolData(symbolData4hRSI8020, uniquePositionSymbols)
+                let rsi1d8020OrderableSymbols = await placeOrder.removePositionsFromSymbolData(symbolData1dRSI8020, uniquePositionSymbols)
     
-        //         rsi4h80OrderableSymbols.slice(0, numberOfAvailableOrders80)
-        //         rsi1d80OrderableSymbols.slice(0, numberOfAvailableOrders80)
-        //         rsi4h8020OrderableSymbols.slice(0, numberOfAvailableOrders80)
-        //         rsi1d8020OrderableSymbols.slice(0, numberOfAvailableOrders80)
+                rsi4h80OrderableSymbols.slice(0, numberOfAvailableOrders80)
+                rsi1d80OrderableSymbols.slice(0, numberOfAvailableOrders80)
+                rsi4h8020OrderableSymbols.slice(0, numberOfAvailableOrders80)
+                rsi1d8020OrderableSymbols.slice(0, numberOfAvailableOrders80)
 
                    
-        //         await placeOrder.cancelExistingOrders(rsi4h80OrderableSymbols, binance, getUSDTBalance)
-        //         await placeOrder.cancelExistingOrders(rsi1d80OrderableSymbols, binance, getUSDTBalance)
-        //         await placeOrder.cancelExistingOrders(rsi4h8020OrderableSymbols, binance, getUSDTBalance)
-        //         await placeOrder.cancelExistingOrders(rsi1d8020OrderableSymbols, binance, getUSDTBalance)
+                await placeOrder.cancelExistingOrders(rsi4h80OrderableSymbols, binance, getUSDTBalance)
+                await placeOrder.cancelExistingOrders(rsi1d80OrderableSymbols, binance, getUSDTBalance)
+                await placeOrder.cancelExistingOrders(rsi4h8020OrderableSymbols, binance, getUSDTBalance)
+                await placeOrder.cancelExistingOrders(rsi1d8020OrderableSymbols, binance, getUSDTBalance)
                 
-        //     } catch (error) {
-        //         console.log('error placing order in bot 1 - rsi 80');
-        //     }
+            } catch (error) {
+                console.log('error placing order in bot 1 - rsi 80');
+            }
        
 
-        // } else console.log('positions in bot 1 for rsi 80 are filled');
+        } else console.log('positions in bot 1 for rsi 80 are filled');
 
-        // if (numberOfAvailableOrders > 0) {
+        if (numberOfAvailableOrders > 0) {
 
     
-        //     try {
+            try {
 
-        //         console.log('rsi70s');
-        //         let rsi4hOrderableSymbols = await placeOrder.removePositionsFromSymbolData(symbolData4hRSI, uniquePositionSymbols)
-        //         let rsi1dOrderableSymbols = await placeOrder.removePositionsFromSymbolData(symbolData1dRSI, uniquePositionSymbols)
-        //         let rsi4h20OrderableSymbols = await placeOrder.removePositionsFromSymbolData(symbolData4hRSI20, uniquePositionSymbols)
-        //         let rsi1d20OrderableSymbols = await placeOrder.removePositionsFromSymbolData(symbolData1dRSI20, uniquePositionSymbols)
+                console.log('rsi70s');
+                let rsi4hOrderableSymbols = await placeOrder.removePositionsFromSymbolData(symbolData4hRSI, uniquePositionSymbols)
+                let rsi1dOrderableSymbols = await placeOrder.removePositionsFromSymbolData(symbolData1dRSI, uniquePositionSymbols)
+                let rsi4h20OrderableSymbols = await placeOrder.removePositionsFromSymbolData(symbolData4hRSI20, uniquePositionSymbols)
+                let rsi1d20OrderableSymbols = await placeOrder.removePositionsFromSymbolData(symbolData1dRSI20, uniquePositionSymbols)
 
-        //         rsi4hOrderableSymbols.slice(0, numberOfAvailableOrders)
-        //         rsi1dOrderableSymbols.slice(0, numberOfAvailableOrders)
-        //         rsi4h20OrderableSymbols.slice(0, numberOfAvailableOrders)
-        //         rsi1d20OrderableSymbols.slice(0, numberOfAvailableOrders)
+                rsi4hOrderableSymbols.slice(0, numberOfAvailableOrders)
+                rsi1dOrderableSymbols.slice(0, numberOfAvailableOrders)
+                rsi4h20OrderableSymbols.slice(0, numberOfAvailableOrders)
+                rsi1d20OrderableSymbols.slice(0, numberOfAvailableOrders)
 
-        //         await placeOrder.cancelExistingOrders(rsi4hOrderableSymbols, binance, getUSDTBalance)
-        //         await placeOrder.cancelExistingOrders(rsi1dOrderableSymbols, binance, getUSDTBalance)
-        //         await placeOrder.cancelExistingOrders(rsi4h20OrderableSymbols, binance, getUSDTBalance)
-        //         await placeOrder.cancelExistingOrders(rsi1d20OrderableSymbols, binance, getUSDTBalance)
+                await placeOrder.cancelExistingOrders(rsi4hOrderableSymbols, binance, getUSDTBalance)
+                await placeOrder.cancelExistingOrders(rsi1dOrderableSymbols, binance, getUSDTBalance)
+                await placeOrder.cancelExistingOrders(rsi4h20OrderableSymbols, binance, getUSDTBalance)
+                await placeOrder.cancelExistingOrders(rsi1d20OrderableSymbols, binance, getUSDTBalance)
 
-        //     } catch (error) {
-        //         console.log('error placing order in bot 1');
-        //     }
+            } catch (error) {
+                console.log('error placing order in bot 1');
+            }
        
 
-        // } else console.log('positions in bot 1 are filled');
+        } else console.log('positions in bot 1 are filled');
 
 
 
