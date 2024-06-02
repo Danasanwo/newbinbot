@@ -58,8 +58,6 @@ async function mainBot() {
 
         let symbolData1dRSI8020 = symBolData.sort((a, b) => Math.abs(a[3]) - Math.abs(b[3])).filter((a) =>  a[3] < (rsi1dLowerLimit - 5));
 
-
-        binance.fetchCanceledAndClosedOrders()
     
         console.log("let's go for bot 1");
 
