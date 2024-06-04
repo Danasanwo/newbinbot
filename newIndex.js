@@ -28,7 +28,7 @@ async function mainBot() {
         let combined1dRSIArray = symBolData.map(a => a[4]).filter(element => typeof element === 'number')
         let combined1dRSIValue = combined1dRSIArray.length > 0 ? ((combined1dRSIArray.reduce((acc, curr) => acc + curr, 0))/combined1dRSIArray.length):0
 
-        let rsi4hUpperlimit = combined4hRSIValue && combined4hRSIValue + 25 > 77 ? combined4hRSIValue + 25 : 77
+        let rsi4hUpperlimit = combined4hRSIValue && combined4hRSIValue + 25 > 75 ? combined4hRSIValue + 25 : 75
         let rsi4hLowerLimit = combined4hRSIValue && combined4hRSIValue - 20 < 23 ? combined4hRSIValue - 20 : 23
 
         let rsi1dUpperLimit = combined1dRSIValue && combined1dRSIValue + 23 > 75 ? combined1dRSIValue + 23 : 75
