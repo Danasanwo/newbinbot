@@ -43,7 +43,7 @@ async function cancelExistingOrders(markets, binance, getUSDTBalance) {
             if (openOrders.length == 0) {
             
 
-                if ((rsi4h > 70 && (bullBear4h < 0 && bullBear1d < 0))|| (rsi4h < 30 && (bullBear4h > 0 && bullBear1d > 0))) {
+                if ((rsi4h > 70 && (bullBear4h < 0 || bullBear1d < 0))|| (rsi4h < 30 && (bullBear4h > 0 || bullBear1d > 0))) {
 
                     marketSide = rsi4h > 70 ? 'sell': 'buy'
 
