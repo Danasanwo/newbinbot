@@ -51,7 +51,7 @@ async function setStopLossTakeProfit(pos, binance, symbolData) {
             // check if existing stop loss
 
             try {
-                if (unrealizedPnl >= (0.2 * initialMargin)) {
+                if (unrealizedPnl >= (0.35 * initialMargin)) {
                     await binance.createStopLossOrder(positionSymbol, 'STOP_MARKET', side, positionContracts, entryPrice, entryPrice)
                     console.log(`stop loss for ${positionSymbol}`);
                 }
