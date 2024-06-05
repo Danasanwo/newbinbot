@@ -66,8 +66,8 @@ async function mainBot() {
         let getUSDTBalance = await (await binance.fetchBalance()).info.availableBalance
         let positionSymbols = allPositions.map(obj => obj.info.symbol)
         let uniquePositionSymbols = [...new Set(positionSymbols) ]
-        let numberOfAvailableOrders = 7 - uniquePositionSymbols.length 
-        let numberOfAvailableOrders80 = 10 - uniquePositionSymbols.length
+        let numberOfAvailableOrders = 10 - uniquePositionSymbols.length 
+        let numberOfAvailableOrders80 = 15 - uniquePositionSymbols.length
     
 
 
