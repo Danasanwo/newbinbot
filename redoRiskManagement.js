@@ -26,24 +26,36 @@ async function setStopLossTakeProfit(pos, binance, symbolData) {
 
         let side = positionSide === 'short' || positionSide === 'sell' ? 'buy' : 'sell';
         let stopLossPrice = await positionSide === 'short' || positionSide === 'sell' ? (entryPrice + (0.15 * entryPrice )): (entryPrice - (0.15 * entryPrice ))
-        let takeProfitPrice = await positionSide === 'short' || positionSide === 'sell' ? (entryPrice - (0.05 * entryPrice )): (entryPrice + (0.05 * entryPrice ))
+        let takeProfitPrice = await positionSide === 'short' || positionSide === 'sell' ? (entryPrice - (0.05 * entryPrice )): (entryPrice + (0.03 * entryPrice ))
         let stopLossThreshold = -(3 * initialMargin);
-        let takeProfitThreshold = 1 * initialMargin;
+        let takeProfitThreshold = 0.6 * initialMargin;
 
 
         async function setSLTPorders() { 
+
             // take profit 
 
-            if (unrealizedPnl >= (4 * takeProfitThreshold)) {
-                await binance.createTrailingPercentOrder(positionSymbol, 'trailing_stop', side, positionContracts, undefined, 5);
-                console.log(`take profit for ${positionSymbol}`);
-            } else if (unrealizedPnl >= takeProfitThreshold) {
-                await binance.createTrailingPercentOrder(positionSymbol, 'trailing_stop', side, positionContracts, undefined, 2);
-                console.log(`take profit for ${positionSymbol}`);
-            } else  if (unrealizedPnl < takeProfitThreshold ) {
-                await binance.createTrailingPercentOrder(positionSymbol, 'trailing_stop', side, positionContracts, undefined, 1, takeProfitPrice);
-                console.log(`take profit for ${positionSymbol}`);
-            } 
+            try {
+
+                if (rsi4h < 65) {
+                    if (unrealizedPnl >= (4 * takeProfitThreshold)) {
+                        await binance.createTrailingPercentOrder(positionSymbol, 'trailing_stop', side, positionContracts, undefined, 5);
+                        console.log(`take profit for ${positionSymbol}`);
+                    } else if (unrealizedPnl >= takeProfitThreshold) {
+                        await binance.createTrailingPercentOrder(positionSymbol, 'trailing_stop', side, positionContracts, undefined, 2);
+                        console.log(`take profit for ${positionSymbol}`);
+                    } else  if (unrealizedPnl < takeProfitThreshold ) {
+                        await binance.createTrailingPercentOrder(positionSymbol, 'trailing_stop', side, positionContracts, undefined, 1, takeProfitPrice);
+                        console.log(`take profit for ${positionSymbol}`);
+                    } 
+                }
+
+                
+            } catch (error) {
+                console.log(`unable to place take profit orders`);
+            }
+
+      
         
         }
 
@@ -51,12 +63,11 @@ async function setStopLossTakeProfit(pos, binance, symbolData) {
             // check if existing stop loss
 
             try {
-                if (unrealizedPnl >= (0.35 * initialMargin)) {
+                if (unrealizedPnl >= (0.3 * initialMargin)) {
                     await binance.createStopLossOrder(positionSymbol, 'STOP_MARKET', side, positionContracts, entryPrice, entryPrice)
                     console.log(`stop loss for ${positionSymbol}`);
                 }
 
-    
             } catch (error) {
                 console.log(error.message);
             }
@@ -68,29 +79,40 @@ async function setStopLossTakeProfit(pos, binance, symbolData) {
 
         async function setAddmore() {
 
-            if (positionSide === 'short' || positionSide === 'sell') {
-                if (rsi1d > 80 || rsi4h > 80) {
-
-                    if (unrealizedPnl < stopLossThreshold) {
-
-                         console.log(rsi4h, rsi1d, positionSymbol);
-
-                         let reSide = positionSide === 'short' || positionSide === 'sell' ? 'sell' : 'buy';
-                        
-                         await binance.createTrailingPercentOrder(positionSymbol, 'trailing_stop', reSide``, (1.75 * positionContracts), undefined, 5);
-                         console.log(`add more for ${positionSymbol}`);
+            try {
+                if (positionSide === 'short' || positionSide === 'sell') {
+                    if (rsi1d > 80 || rsi4h > 80) {
+    
+                        if (unrealizedPnl < stopLossThreshold) {
+    
+                             console.log(rsi4h, rsi1d, positionSymbol);
+    
+                             let reSide = positionSide === 'short' || positionSide === 'sell' ? 'sell' : 'buy';
+                            
+                             await binance.createTrailingPercentOrder(positionSymbol, 'trailing_stop', reSide, (1.2 * positionContracts), undefined, 5);
+                             console.log(`add more for ${positionSymbol}`);
+                        }
                     }
                 }
-            }
+    
+                if (positionSide === 'long' || positionSide === 'buy') {
+                    if (rsi1d < 20 || rsi4h < 19) {
+                        if (unrealizedPnl < stopLossThreshold) {
 
-            if (positionSide === 'long' || positionSide === 'buy') {
-                if (rsi1d < 20 || rsi4h < 20) {
-                    if (unrealizedPnl < stopLossThreshold) {
-                         await binance.createTrailingPercentOrder(positionSymbol, 'trailing_stop', positionSide, (1.75 * positionContracts), undefined, 5);
-                         console.log(`add more for ${positionSymbol}`);
+                            let reSide = positionSide === 'short' || positionSide === 'sell' ? 'sell' : 'buy';
+                            
+                            await binance.createTrailingPercentOrder(positionSymbol, 'trailing_stop', reSide, (1 * positionContracts), undefined, 5);
+                            console.log(`add more for ${positionSymbol}`);
+                        }
                     }
                 }
+                
+            } catch (error) {
+                console.log(`could not place addMore`);
+                
             }
+
+         
         }
 
         

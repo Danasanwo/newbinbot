@@ -42,38 +42,46 @@ async function cancelExistingOrders(markets, binance, getUSDTBalance) {
 
             if (openOrders.length == 0) {
             
+                if (((rsi1d > 70 && bullBear1d <= 0)|| (rsi1d < 30 && bullBear1d >= 0))) {
+                    marketSide = rsi1d > 70 ? 'sell': 'buy'
 
-                if ((rsi4h > 70 && (bullBear4h < 0 || bullBear1d < 0))|| (rsi4h < 30 && (bullBear4h > 0 || bullBear1d > 0))) {
+                    let tradeAmount = 0.4
+
+                    if (rsi1d > 94) tradeAmount = 5
+                    else if (rsi1d > 90) tradeAmount = 3
+                    else if (rsi1d > 85) tradeAmount = 2
+                    else if (rsi1d > 81) tradeAmount = 1
+                    else if (rsi1d > 77) tradeAmount = 0.75
+
+                    await orderSymbol(marketSymbol, marketSide, binance, currentPrice, getUSDTBalance, tradeAmount)
+
+
+                } else if ((rsi4h > 70 && (bullBear4h < 0 || bullBear1d < 0))|| (rsi4h < 30 && (bullBear4h > 0 || bullBear1d > 0))) {
 
                     marketSide = rsi4h > 70 ? 'sell': 'buy'
 
                     let tradeAmount = 0.25
 
-                    if (rsi4h > 90) tradeAmount = 2
+                    if (rsi4h > 94) tradeAmount = 3
+                    else if (rsi4h > 90) tradeAmount = 2
                     else if(rsi4h > 85) tradeAmount = 1.2
-                    else if (rsi4h > 80) tradeAmount = 0.75
+                    else if (rsi4h > 81) tradeAmount = 0.75
+                    else if (rsi4h > 77) tradeAmount = 0.4
 
                     await orderSymbol(marketSymbol, marketSide, binance, currentPrice, getUSDTBalance, tradeAmount)
-
-                } else if ((rsi1d > 70 || rsi1d < 30)) {
-                    marketSide = rsi1d > 70 ? 'sell': 'buy'
-
-                    let tradeAmount = 0.4
-
-                    if (rsi1d > 90) tradeAmount = 3
-                    else if (rsi1d > 85) tradeAmount = 2
-                    else if (rsi1d > 80) tradeAmount = 1
-
-                    await orderSymbol(marketSymbol, marketSide, binance, currentPrice, getUSDTBalance, tradeAmount)
-
 
                 }
-
              }
 
             if (openOrders.length > 0) {
+
+                
                 for (const ord of openOrders) {
                     if (timeNow > (ord.lastUpdateTimestamp + 86400000) ) {
+                        await binance.cancelOrder(ord.id, ord.info.symbol);
+                    }
+
+                    if (rsi4h < 73 && rsi1d < 70) {
                         await binance.cancelOrder(ord.id, ord.info.symbol);
                     }
 
