@@ -10,7 +10,7 @@ async function compileAlgo(binance) {
         const getAllMarket = await getHistoricalData.getAllMarket(binance);
         const symBolData = [];
 
-        await Promise.all(getAllMarket.map(async symbol => {
+        await Promise.all(getAllMarket.slice(0,180).map(async symbol => {
             try {
                 const [historicalDataOneHour, historicalDataFourHour, historicalDataOneDay] = await Promise.all([
                     binance.fetchOHLCV(symbol, '1h'),
