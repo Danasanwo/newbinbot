@@ -21,6 +21,8 @@ async function mainBot() {
 
         let symBolData = await combineAlgo.compileAlgo(secondBinance)
 
+        // change api source 
+
         let combined4hRSIArray = symBolData.map(a => a[3]).filter(element => typeof element === 'number')
         let combined4hRSIValue = combined4hRSIArray.length > 0 ? ((combined4hRSIArray.reduce((acc, curr) => acc + curr, 0))/combined4hRSIArray.length):0
     
