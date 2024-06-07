@@ -30,10 +30,10 @@ async function mainBot() {
         let combined1dRSIArray = symBolData.map(a => a[4]).filter(element => typeof element === 'number')
         let combined1dRSIValue = combined1dRSIArray.length > 0 ? ((combined1dRSIArray.reduce((acc, curr) => acc + curr, 0))/combined1dRSIArray.length):0
 
-        let rsi4hUpperlimit = combined4hRSIValue && combined4hRSIValue + 25 > 75 ? combined4hRSIValue + 25 : 73
+        let rsi4hUpperlimit = combined4hRSIValue && combined4hRSIValue + 25 > 73 ? combined4hRSIValue + 25 : 73
         let rsi4hLowerLimit = combined4hRSIValue && combined4hRSIValue - 20 < 23 ? combined4hRSIValue - 20 : 23
 
-        let rsi1dUpperLimit = combined1dRSIValue && combined1dRSIValue + 23 > 75 ? combined1dRSIValue + 23 : 73
+        let rsi1dUpperLimit = combined1dRSIValue && combined1dRSIValue + 23 > 73 ? combined1dRSIValue + 23 : 73
         let rsi1dLowerLimit  = combined4hRSIValue && combined1dRSIValue - 17 < 25 ? combined1dRSIValue - 17: 25
 
         console.log(rsi4hUpperlimit,rsi4hLowerLimit, rsi1dUpperLimit, rsi1dLowerLimit);
@@ -52,7 +52,7 @@ async function mainBot() {
 
         // higher RSIS
 
-        let symbolData4hRSI80 = symBolData.sort((a, b) => Math.abs(b[3]) - Math.abs(a[3])).filter((a) => a[3] > (rsi4hUpperlimit + 5));
+        let symbolData4hRSI80 = symBolData.sort((a, b) => Math.abs(b[3]) - Math.abs(a[3])).filter((a) => a[3] > (rsi4hUpperlimit + 7));
 
         let symbolData4hRSI8020 = symBolData.sort((a, b) => Math.abs(a[3]) - Math.abs(b[3])).filter((a) =>  a[3] < (rsi4hLowerLimit - 5));
 
@@ -82,16 +82,17 @@ async function mainBot() {
 
                 console.log('rsi80s');
 
+
                 let rsi4h80OrderableSymbols = await placeOrder.removePositionsFromSymbolData(symbolData4hRSI80, uniquePositionSymbols)
                 let rsi1d80OrderableSymbols =  await placeOrder.removePositionsFromSymbolData(symbolData1dRSI80, uniquePositionSymbols)
                 let rsi4h8020OrderableSymbols = await placeOrder.removePositionsFromSymbolData(symbolData4hRSI8020, uniquePositionSymbols)
                 let rsi1d8020OrderableSymbols = await placeOrder.removePositionsFromSymbolData(symbolData1dRSI8020, uniquePositionSymbols)
     
+
                 rsi4h80OrderableSymbols.slice(0, numberOfAvailableOrders80)
                 rsi1d80OrderableSymbols.slice(0, numberOfAvailableOrders80)
                 rsi4h8020OrderableSymbols.slice(0, numberOfAvailableOrders80)
                 rsi1d8020OrderableSymbols.slice(0, numberOfAvailableOrders80)
-
                    
                 await placeOrder.cancelExistingOrders(rsi4h80OrderableSymbols, binance, getUSDTBalance)
                 await placeOrder.cancelExistingOrders(rsi1d80OrderableSymbols, binance, getUSDTBalance)
@@ -112,11 +113,22 @@ async function mainBot() {
             try {
 
                 console.log('rsi70s');
+
+                console.log(symbolData4hRSI);
+                console.log(symbolData1dRSI);
+
                 let rsi4hOrderableSymbols = await placeOrder.removePositionsFromSymbolData(symbolData4hRSI, uniquePositionSymbols)
                 let rsi1dOrderableSymbols = await placeOrder.removePositionsFromSymbolData(symbolData1dRSI, uniquePositionSymbols)
 
+
+                console.log(rsi4hOrderableSymbols);
+                console.log(rsi1dOrderableSymbols);
+
                 rsi4hOrderableSymbols.slice(0, numberOfAvailableOrders)
                 rsi1dOrderableSymbols.slice(0, numberOfAvailableOrders)
+
+                console.log(rsi4hOrderableSymbols);
+                console.log(rsi1dOrderableSymbols);
 
                 await placeOrder.cancelExistingOrders(rsi4hOrderableSymbols, binance, getUSDTBalance)
                 await placeOrder.cancelExistingOrders(rsi1dOrderableSymbols, binance, getUSDTBalance)
