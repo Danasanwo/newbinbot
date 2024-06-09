@@ -45,8 +45,10 @@ async function setStopLossTakeProfit(pos, binance, symbolData) {
                         await binance.createTrailingPercentOrder(positionSymbol, 'trailing_stop', side, positionContracts, undefined, 2);
                         console.log(`take profit for ${positionSymbol}`);
                     } else  if (unrealizedPnl < takeProfitThreshold ) {
-                        await binance.createTrailingPercentOrder(positionSymbol, 'trailing_stop', side, positionContracts, undefined, side == 'buy' ? 1 : 2.5, takeProfitPrice);
-                        console.log(`take profit for ${positionSymbol}`);
+                        if (positionSide === 'short' || positionSide === 'sell' ) {
+                            await binance.createTrailingPercentOrder(positionSymbol, 'trailing_stop', side, positionContracts, undefined, side == 'buy' ? 1 : 2.5, takeProfitPrice);
+                            console.log(`take profit for ${positionSymbol}`);
+                        }
                     } 
                 }
 
