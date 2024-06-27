@@ -6,7 +6,9 @@ const random = require('./random');
 const calculateRSI = require('./calculateRSI')
 
 async function compileAlgo(binance) {
-  
+
+    const getAllMarket = await getHistoricalData.getAllMarket(binance);
+    const symBolData = [];
 
     await Promise.all(getAllMarket.map(async symbol => {
         try {
