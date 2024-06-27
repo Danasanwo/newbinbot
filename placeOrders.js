@@ -57,7 +57,7 @@ async function cancelExistingOrders(markets, binance, getUSDTBalance) {
                     await orderSymbol(marketSymbol, marketSide, binance, currentPrice, getUSDTBalance, tradeAmount)
 
 
-                } else if ((rsi4h > 70 && (bullBear4h < 0 || bullBear1d < 0))|| (rsi4h < 30 && (bullBear4h > 0 || bullBear1d > 0))) {
+                } else if ((rsi4h > 70 && (bullBear4h < 0 || bullBear1d <= 0))|| (rsi4h < 30 && (bullBear4h > 0 || bullBear1d > 0))) {
 
                     marketSide = rsi4h > 70 ? 'sell': 'buy'
 
@@ -76,20 +76,28 @@ async function cancelExistingOrders(markets, binance, getUSDTBalance) {
 
             if (openOrders.length > 0) {
 
-                
-                for (const ord of openOrders) {
-                    if (timeNow > (ord.lastUpdateTimestamp + 86400000) ) {
-                        await binance.cancelOrder(ord.id, ord.info.symbol);
-                    }
+                try {
+                           
+                    for (const ord of openOrders) {
+                        if (timeNow > (ord.lastUpdateTimestamp + 86400000) ) {
+                            await binance.cancelOrder(ord.id, ord.info.symbol);
+                        }
 
-                    if (rsi4h < 73 && rsi1d < 70) {
-                        await binance.cancelOrder(ord.id, ord.info.symbol);
-                    }
+                        if ((rsi4h < 73 && rsi1d < 70 && ord.side == 'sell' ) || (rsi4h > 25 && rsi1d > 30 && ord.side == 'buy')) {
+                            await binance.cancelOrder(ord.id, ord.info.symbol);
+                        }
 
-                    // if (ord.info.priceRate == 2) { //checkriskmanagement setSLTPorders() 
-                    //     //set order
-                    // }
+                        // if (ord.info.priceRate == 2) { //checkriskmanagement setSLTPorders() 
+                        //     //set order
+                        // }
+                    }
+                    
+                } catch (error) {
+                    console.log('could not cancel');
+                    
                 }
+
+         
             }
          
         }

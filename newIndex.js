@@ -19,7 +19,7 @@ const newRiskManager = require('./redoRiskManagement')
 async function mainBot() {
     try {
 
-        let symBolData = await combineAlgo.compileAlgo(secondBinance)
+        let symBolData = await combineAlgo.compileAlgo(binance)
 
         // change api source 
 
@@ -30,13 +30,13 @@ async function mainBot() {
         let combined1dRSIArray = symBolData.map(a => a[4]).filter(element => typeof element === 'number')
         let combined1dRSIValue = combined1dRSIArray.length > 0 ? ((combined1dRSIArray.reduce((acc, curr) => acc + curr, 0))/combined1dRSIArray.length):0
 
-        let rsi4hUpperlimit = combined4hRSIValue && combined4hRSIValue + 23 > 73 ? combined4hRSIValue + 20 : 73
-        let rsi4hLowerLimit = combined4hRSIValue && combined4hRSIValue - 18 < 25 ? combined4hRSIValue - 15 : 25
+        let rsi4hUpperlimit = combined4hRSIValue && combined4hRSIValue + 20 > 73 ? combined4hRSIValue + 20 : 73
+        let rsi4hLowerLimit = combined4hRSIValue && combined4hRSIValue - 15 < 25 ? combined4hRSIValue - 15 : 25
 
-        let rsi1dUpperLimit = combined1dRSIValue && combined1dRSIValue + 23 > 72 ? combined1dRSIValue + 20 : 72
-        let rsi1dLowerLimit  = combined4hRSIValue && combined1dRSIValue - 15 < 23 ? combined1dRSIValue - 12: 23
+        let rsi1dUpperLimit = combined1dRSIValue && combined1dRSIValue + 20 > 72 ? combined1dRSIValue + 20 : 72
+        let rsi1dLowerLimit  = combined4hRSIValue && combined1dRSIValue - 12 < 23 ? combined1dRSIValue - 12: 23
 
-        console.log(rsi4hUpperlimit,rsi4hLowerLimit, rsi1dUpperLimit, rsi1dLowerLimit);
+        console.log("limits:", rsi4hUpperlimit,rsi4hLowerLimit, rsi1dUpperLimit, rsi1dLowerLimit);
 
 
         // Lower RSIs 
@@ -114,15 +114,8 @@ async function mainBot() {
 
                 console.log('rsi70s');
 
-                console.log(symbolData4hRSI);
-                console.log(symbolData1dRSI);
-
                 let rsi4hOrderableSymbols = await placeOrder.removePositionsFromSymbolData(symbolData4hRSI, uniquePositionSymbols)
                 let rsi1dOrderableSymbols = await placeOrder.removePositionsFromSymbolData(symbolData1dRSI, uniquePositionSymbols)
-
-
-                console.log(rsi4hOrderableSymbols);
-                console.log(rsi1dOrderableSymbols);
 
                 rsi4hOrderableSymbols.slice(0, numberOfAvailableOrders)
                 rsi1dOrderableSymbols.slice(0, numberOfAvailableOrders)
