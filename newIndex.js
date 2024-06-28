@@ -21,6 +21,7 @@ async function mainBot() {
 
         let symBolData = await combineAlgo.compileAlgo(binance)
 
+
         // change api source 
 
         let combined4hRSIArray = symBolData.map(a => a[3]).filter(element => typeof element === 'number')
@@ -34,7 +35,7 @@ async function mainBot() {
         let rsi4hLowerLimit = combined4hRSIValue && combined4hRSIValue - 15 < 25 ? combined4hRSIValue - 15 : 25
 
         let rsi1dUpperLimit = combined1dRSIValue && combined1dRSIValue + 20 > 72 ? combined1dRSIValue + 20 : 72
-        let rsi1dLowerLimit  = combined4hRSIValue && combined1dRSIValue - 12 < 23 ? combined1dRSIValue - 12: 23
+        let rsi1dLowerLimit  = combined4hRSIValue && combined1dRSIValue - 12 < 27 ? combined1dRSIValue - 12: 27
 
         console.log("limits:", rsi4hUpperlimit,rsi4hLowerLimit, rsi1dUpperLimit, rsi1dLowerLimit);
 
@@ -152,7 +153,45 @@ async function mainBot() {
                 console.log('error placing order in bot 1');
             }
 
-        }else console.log('positions in bot 1 buy are filled');
+        } else console.log('positions in bot 1 buy are filled');
+
+
+        //for bot two
+        console.log('for bot two');
+
+        symDataBotTwo = symBolData.sort((a, b) => Math.abs(b[1]) - Math.abs(a[1]));
+
+    
+
+        let allPositionsBotTwo = await secondBinance.fetchPositions()
+        let getUSDTBalanceBotTwo = await (await secondBinance.fetchBalance()).info.availableBalance
+        let positionSymbolsBotTwo = allPositionsBotTwo.map(obj => obj.info.symbol)
+        let uniquePositionSymbolsBotTwo = [...new Set(positionSymbolsBotTwo) ]
+        let numberOfAvailableOrdersBotTwo = 20 - uniquePositionSymbolsBotTwo.length 
+
+
+        
+        for (pos of allPositionsBotTwo) {
+            orderSystem.setStopLossTakeProfit(pos, secondBinance)
+        }
+
+        if (numberOfAvailableOrdersBotTwo > 0) {
+
+            try {
+
+                let orderableSymbolsinBotTwo = await placeOrder.removePositionsFromSymbolData(symBolData, uniquePositionSymbolsBotTwo).slice(0, numberOfAvailableOrdersBotTwo)
+
+                let continueOrderinBotTwo = await orderSystem.cancelExistingOrders(orderableSymbolsinBotTwo, secondBinance, getUSDTBalanceBotTwo)
+            } catch (error) {
+                console.log('error placing order in bot 2');
+            }
+
+        } else console.log('positions in bot 2 are filled');
+
+
+
+
+
 
 
 
@@ -176,7 +215,7 @@ binance
 
 mainBot()
 
-setInterval(mainBot, 1200000)
+setInterval(mainBot, 1500000)
 
 
 

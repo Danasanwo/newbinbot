@@ -6,9 +6,9 @@ async function setStopLossTakeProfit(pos, binance) {
 
         let side = pos.side === 'short' || pos.side === 'sell' ? 'buy' : 'sell';
         let stopLossPrice = await pos.side === 'short' || pos.side === 'sell' ? (pos.entryPrice + (0.3 * pos.entryPrice )): (pos.entryPrice - (0.3 * pos.entryPrice ))
-        let takeProfitPrice = await pos.side === 'short' || pos.side === 'sell' ? (pos.entryPrice - (0.15 * pos.entryPrice )): (pos.entryPrice + (0.15 * pos.entryPrice ))
+        let takeProfitPrice = await pos.side === 'short' || pos.side === 'sell' ? (pos.entryPrice - (0.15 * pos.entryPrice )): (pos.entryPrice + (0.05 * pos.entryPrice ))
         let stopLossThreshold = -(6 * pos.initialMargin);
-        let takeProfitThreshold = 3 * pos.initialMargin;
+        let takeProfitThreshold = 1 * pos.initialMargin;
 
         async function setSLTPorders() {
             // Check if stop loss or take profit conditions are met
@@ -18,7 +18,7 @@ async function setStopLossTakeProfit(pos, binance) {
 
                 console.log(`stop loss for ${pos.info.symbol}`);
             } else {
-                await binance.createTrailingPercentOrder(pos.info.symbol, 'trailing_stop', side, pos.contracts, undefined, 5, takeProfitPrice);
+                await binance.createTrailingPercentOrder(pos.info.symbol, 'trailing_stop', side, pos.contracts, undefined, 4, takeProfitPrice);
             }   console.log(`take profit for ${pos.info.symbol}`);
         }
 
@@ -58,17 +58,16 @@ async function setStopLossTakeProfit(pos, binance) {
 
 
 
-async function orderSymbol(sym, side, binance, price, getUSDTBalance) {
+async function orderSymbol(sym, side, binance, price, getUSDTBalance, fib) {
     try {
-        let trailingStopPercentage = 2
+        let trailingStopPercentage = 1
         let leverage =  await binance.fetchLeverages(sym)
-        let baseOrderAmount = ((0.02 * getUSDTBalance) * 20)/ price
+        let baseOrderAmount = ((0.01 * getUSDTBalance) * 20)/ price
+
 
         let additionalParams = await side == 'buy' ? 'LONG': 'SHORT'
-
-        console.log(baseOrderAmount);
     
-        await binance.createTrailingPercentOrder(sym, 'trailing_stop',side, baseOrderAmount, undefined, trailingStopPercentage, undefined, undefined)
+        await binance.createTrailingPercentOrder(sym, 'trailing_stop',side, baseOrderAmount, fib, trailingStopPercentage, fib)
 
         console.log(`${sym} ${side} order has been placed at ${price} bot 2`);
 
@@ -92,16 +91,80 @@ async function cancelExistingOrders(markets, binance, getUSDTBalance) {
              let marketSide = await market[1] >= 0 ? 'buy': 'sell'
              let currentPrice = await market[2]
              let openOrders = await binance.fetchOpenOrders(marketSymbol)
+             let rsi1d = await market[4]
+             let rsi4h = await market[3]
+             let rsi1h = await market[7]
+             let yesterdayPrice = await market[8][2]
+             let priceChange = Math.abs( ((currentPrice - yesterdayPrice)/yesterdayPrice) * 100)
+             let perGrouped = await market[9]
+             let fib = await market[10]
              
-     
-             if (openOrders.length == 0) {
-               await orderSymbol(marketSymbol, marketSide, binance, currentPrice, getUSDTBalance)
-             }
+
+            
+            function findClosestNumber(obj, num, marketSide) {
+
+                    let values = Object.values(obj);
+
+                    // Filter the array based on the direction
+                    let filteredArr = values.filter(value => {
+                    return marketSide === 'buy' ? value < num : value > num;
+                    });
+                
+                    // Sort the filtered array based on the direction
+                    filteredArr.sort((a, b) => {
+                    return marketSide === 'buy' ? b - a : a - b;
+                    });
+                
+                    // Return the first element in the sorted filtered array
+                    return filteredArr.length > 0 ? filteredArr[0] : null;
+                }
+
+
+            if (openOrders.length == 0) {
+                
+                    if ((rsi1h >= 65)|| (rsi1h <= 35)) {
+
+                        if (priceChange < 15) {
+
+                            if (perGrouped.bull >= 3 || perGrouped.bear >= 3) {
+                    
+                                let fibValue = findClosestNumber(fib, currentPrice, marketSide)
+
+                                await orderSymbol(marketSymbol, marketSide, binance, currentPrice, getUSDTBalance, fibValue)
+                    
+                    
+                            }
+                        }
+                
+
+
+
+
+                    } 
+                }
+
+            if (openOrders.length > 0) {
+
+                try {
+                           
+                    for (const ord of openOrders) {
+                        if (timeNow > (ord.lastUpdateTimestamp + 86400000) ) {
+                            await binance.cancelOrder(ord.id, ord.info.symbol);
+                        }
+
+                    }
+                    
+                } catch (error) {
+                    console.log('could not cancel');
+                    
+                }
+             
+            }
          
         }
         
     } catch (error) {
-        console.log(`could not check for existing item`);
+        console.log(error.message);
     }
 
 

@@ -8,42 +8,55 @@ async function prioritizeMarkets(candleStick, indicators, price) {
         let indicatorsData = await indicators
         let bullishPoints = 0
         let bearishPoints = 0
-    
-    
+        let bearbullpointer = {
+            "bull": 0,
+            "bear": 0,
+            "neutral": 0
+        }    
+
+
+
 
         // candleStick 
     
     
-        bullishPoints = candleStickData.bullish * 20
-        bearishPoints = candleStickData.bearish * 20
+        bullishPoints = candleStickData.bullish * 10
+        bearishPoints = candleStickData.bearish * 10
+
+        if (bullishPoints > bearishPoints) bearbullpointer.bull += 1
+        else if (bearishPoints > bullishPoints) bearbullpointer.bear += 1
+        else if (bullishPoints == bearishPoints) bearbullpointer.neutral += 1
     
         // sma 
       
         function checkcrossMA(smallPeriod, largePeriod) {
             
-            let yesterdayWasLower = indicators.SMA.yesterday[smallPeriod][0] < indicators.SMA.yesterday[largePeriod][0]
-            let dayBeforeWasLower = indicators.SMA.daybefore[smallPeriod][0] < indicators.SMA.daybefore[largePeriod][0]
-            let todayIsHigher = indicators.SMA.today[smallPeriod][0] > indicators.SMA.today[largePeriod][0]
+            let yesterdayWasLower = indicators.SMA.yesterday[smallPeriod] < indicators.SMA.yesterday[largePeriod]
+            let dayBeforeWasLower = indicators.SMA.daybefore[smallPeriod] < indicators.SMA.daybefore[largePeriod]
+            let todayIsHigher = indicators.SMA.today[smallPeriod] > indicators.SMA.today[largePeriod]
     
-            let yesterdayWasHigher = indicators.SMA.yesterday[smallPeriod][0] > indicators.SMA.yesterday[largePeriod][0]
-            let dayBeforeWasHigher = indicators.SMA.daybefore[smallPeriod][0] > indicators.SMA.daybefore[largePeriod][0]
-            let todayIsLower = indicators.SMA.today[smallPeriod][0] < indicators.SMA.today[largePeriod][0]
+            let yesterdayWasHigher = indicators.SMA.yesterday[smallPeriod] > indicators.SMA.yesterday[largePeriod]
+            let dayBeforeWasHigher = indicators.SMA.daybefore[smallPeriod] > indicators.SMA.daybefore[largePeriod]
+            let todayIsLower = indicators.SMA.today[smallPeriod] < indicators.SMA.today[largePeriod]
             
           
             if ( (yesterdayWasLower && todayIsHigher)|| (dayBeforeWasLower && yesterdayWasHigher) || (dayBeforeWasLower && todayIsHigher)) {
                  bullishPoints = bullishPoints + 0.5 + ((largePeriod - smallPeriod)/10)
 
+
+
                  
             } else if ((yesterdayWasHigher && todayIsLower)|| (dayBeforeWasHigher && yesterdayWasLower) || (dayBeforeWasHigher && todayIsLower)) {
                 bearishPoints = bearishPoints + 0.5 + ((largePeriod - smallPeriod)/10)       
     
+
             } else {
                 return false
             }
     
         }
     
-        // console.log( bullishPoints, bearishPoints);
+
     
         //vma
     
@@ -51,59 +64,67 @@ async function prioritizeMarkets(candleStick, indicators, price) {
     
         //adx
     
-        if (indicatorsData.ADX > 80) {
-            bullishPoints += 6
-            bearishPoints += 6
-        } else if ( indicatorsData.ADX > 60 ) {
-            bullishPoints += 9
-            bearishPoints += 9
-        } else if ( indicatorsData.ADX > 40 ) {
-            bullishPoints += 12
-            bearishPoints += 12
-        } else if ( indicatorsData.ADX > 20 ) {
-            bullishPoints += 15
-            bearishPoints += 15
+        if (indicatorsData.ADX.adx > 30) {
+            bullishPoints += 0
+            bearishPoints += 0
+        } else if ( indicatorsData.ADX.adx > 25 ) {
+            bullishPoints += 10
+            bearishPoints += 10
+        } else if ( indicatorsData.ADX.adx > 20 ) {
+            bullishPoints += 5
+            bearishPoints += 5
+        } 
+
+
+        if (indicatorsData.ADX.adx > 25 && indicatorsData.ADX.adx < 30) {
+            if (indicatorsData.ADX.pdi > indicatorsData.ADX.mdi) bearbullpointer.bull += 1
+            else if (indicatorsData.ADX.mdi > indicatorsData.ADX.pdi) bearbullpointer.bear += 1
         }
     
-        // console.log( bullishPoints, bearishPoints);
+
         
     
         // rsi 
         if (indicatorsData.RSI >= 90) {
             bullishPoints += 0
-            bearishPoints += 50
+            bearishPoints += 30
     
         } else if ( indicatorsData.RSI >= 80 ) {
             bullishPoints += 0
-            bearishPoints += 30
+            bearishPoints += 20
     
     
         } else if (  indicatorsData.RSI >= 70 ) {
             bullishPoints += 0
-            bearishPoints += 12
+            bearishPoints += 8
     
-        } else if ( indicatorsData.RSI >55 ) {
-            bullishPoints += 2
-            bearishPoints += 6
+        } else if ( indicatorsData.RSI > 65 ) {
+            bullishPoints += 0
+            bearishPoints += 5
     
         } else if ( indicatorsData.RSI > 45 && indicatorsData.RSI < 55 ) {
             bullishPoints += 2
             bearishPoints += 2
     
         } else if (  indicatorsData.RSI >= 35 ) {
-            bullishPoints += 6
-            bearishPoints += 2
+            bullishPoints += 5
+            bearishPoints += 0
         } else if (  indicatorsData.RSI >= 20 ) {
-                bullishPoints += 12
+                bullishPoints += 8
                 bearishPoints += 0
         } else if (  indicatorsData.RSI > 10 ) {
-            bullishPoints += 30
+            bullishPoints += 20
             bearishPoints += 0 
             
         } else if ( indicatorsData.RSI <= 10 ) {
-                bullishPoints += 50
+                bullishPoints += 30
                 bearishPoints += 0
         }
+
+        if (indicatorsData.RSI > 75) bearbullpointer.bull += 1
+        if (indicatorsData.RSI > 25) bearbullpointer.bear += 1
+
+
     
     
     
@@ -143,6 +164,11 @@ async function prioritizeMarkets(candleStick, indicators, price) {
                 bullishPoints += 9
                 bearishPoints += 0
         }
+
+        if (indicatorsData.StochOsc.k > 80) bearbullpointer.bull += 1
+        if (indicatorsData.StochOsc.k > 20) bearbullpointer.bear += 1
+
+
     
         //ATR
     
@@ -168,6 +194,8 @@ async function prioritizeMarkets(candleStick, indicators, price) {
             if (beBoll) return  'beBoll'
     
         }
+
+
       
     //    one day Boll 
         if (checkQuarterBoll(1) =='abBoll') {
@@ -195,16 +223,18 @@ async function prioritizeMarkets(candleStick, indicators, price) {
             bullishPoints = bullishPoints + 3
     
         }
+
+
     
     
     //three day Bollinger
     
         if ((checkQuarterBoll(1) == 'abBoll') && (checkQuarterBoll(2) == 'abBoll') && (checkQuarterBoll(3) == 'abBoll') ) {
-            bearishPoints = bearishPoints + 4
+            bearishPoints = bearishPoints + 8
         }
     
         if ((checkQuarterBoll(1) == 'beBoll') && (checkQuarterBoll(2) == 'beBoll') && (checkQuarterBoll(3) == 'beBoll') ) {
-            bullishPoints = bullishPoints + 4
+            bullishPoints = bullishPoints + 8
         }
     
     
@@ -217,7 +247,7 @@ async function prioritizeMarkets(candleStick, indicators, price) {
             ((checkQuarterBoll(5) == 'abBoll')|| (checkQuarterBoll(5) == 'ftqBoll') ) 
     
         ){
-            bearishPoints = bearishPoints + 4
+            bearishPoints = bearishPoints + 8
     
         }
     
@@ -229,7 +259,7 @@ async function prioritizeMarkets(candleStick, indicators, price) {
             ((checkQuarterBoll(5) == 'fhqBoll')|| (checkQuarterBoll(5) == 'beBoll') ) 
           
         ){
-            bullishPoints = bullishPoints + 4
+            bullishPoints = bullishPoints + 8
         }
     
     
@@ -253,13 +283,13 @@ async function prioritizeMarkets(candleStick, indicators, price) {
         }
            
         if (eightBoll()[0] > eightBoll[1]) {
-            bearishPoints = bearishPoints + 2
+            bearishPoints = bearishPoints + 5
         } else if (eightBoll()[1] > eightBoll[0]) {
-            bullishPoints = bullishPoints + 2
+            bullishPoints = bullishPoints + 5
         }
     
 
-    
+
     
         //band boll
     
@@ -285,16 +315,18 @@ async function prioritizeMarkets(candleStick, indicators, price) {
         }
     
         checkBollBand() 
+
+
     
     
         //VWAP
     
-        if ( price[price.length - 1][4] > indicatorsData.VWAP ) {
-            bullishPoints = bullishPoints + 2
-        }
-        if ( price[price.length - 1][4] < indicatorsData.VWAP) {
-            bearishPoints = bearishPoints + 2
-        }
+        // if ( price[price.length - 1][4] > indicatorsData.VWAP ) {
+        //     bullishPoints = bullishPoints + 2
+        // }
+        // if ( price[price.length - 1][4] < indicatorsData.VWAP) {
+        //     bearishPoints = bearishPoints + 2
+        // }
     
         //OBV
     
@@ -329,11 +361,30 @@ async function prioritizeMarkets(candleStick, indicators, price) {
 
 function combineTimePeriod(periodOne, periodTwo, periodThree, periodYesterday) {
     try {
-        let totalPeriodPoints = periodOne + (2 * periodTwo) + (5 * periodThree) + (5 * periodYesterday)
+        let totalPeriodPoints = periodOne + (4 * periodTwo) + (4 * periodThree) + (1 * periodYesterday)
 
         return totalPeriodPoints
     } catch (error) {
        return 0 
+    }
+}
+
+function groupTimePeriod(periodOne, periodTwo, periodThree, periodFour) {
+    try {
+        let periodGrouper = {
+            bull: 0,
+            bear: 0
+        }
+
+        periodOne > 0 ? periodGrouper.bull += 1 : periodGrouper.bear += 1
+        periodTwo > 0 ? periodGrouper.bull += 1 : periodGrouper.bear += 1
+        periodThree > 0 ? periodGrouper.bull += 1 : periodGrouper.bear += 1
+        periodFour > 0 ? periodGrouper.bull += 1 : periodGrouper.bear += 1
+
+        return periodGrouper
+
+    } catch (error) {
+        console.log('could not find group time period');
     }
 }
 
@@ -358,5 +409,6 @@ function combineTimePeriod(periodOne, periodTwo, periodThree, periodYesterday) {
 
 module.exports = {
     prioritizeMarkets,
-    combineTimePeriod
+    combineTimePeriod,
+    groupTimePeriod
 }

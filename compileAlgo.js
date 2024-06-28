@@ -10,8 +10,11 @@ async function compileAlgo(binance) {
     const getAllMarket = await getHistoricalData.getAllMarket(binance);
     const symBolData = [];
 
-    await Promise.all(getAllMarket.map(async symbol => {
+    await Promise.all(getAllMarket.slice(0,150).map(async symbol => {
         try {
+
+          
+
             const [historicalDataOneHour, historicalDataFourHour, historicalDataOneDay] = await Promise.all([
                 binance.fetchOHLCV(symbol, '1h'),
                 binance.fetchOHLCV(symbol, '4h'),
@@ -48,7 +51,7 @@ async function compileAlgo(binance) {
                 techApi.indicate(trimmedDataOneDay)
             ]);
     
-            const fibonnaci = await fibb.analyseFibonacci(historicalDataOneDay);
+            const fibonnacci = await fibb.analyseFibonacci(historicalDataOneDay);
     
             const [prioritizeOneHour, prioritizeFourHours, prioritizeOneDay, prioritizeYesterday] = await Promise.all([
                 prioritizer.prioritizeMarkets(oneHourCandlesticks, oneHourIndicators, historicalDataOneHour),
@@ -61,10 +64,14 @@ async function compileAlgo(binance) {
     
             let fourHourCandle = fourHourCandlesticks.bullish - fourHourCandlesticks.bearish
             let oneDayCandle = oneDayCandlesticks.bullish - oneDayCandlesticks.bullish
+
+            let perGrouper = await prioritizer.groupTimePeriod(prioritizeOneHour, prioritizeFourHours, prioritizeOneDay, prioritizeYesterday)
     
             // symBolData.push([symbol, combinePri, historicalDataOneHour[historicalDataOneHour.length - 1][4], `RSI4h: ${fourHourIndicators.RSI}`, `RSI1d: ${oneDayIndicators.RSI}`]);
     
-            symBolData.push([symbol, combinePri, historicalDataOneHour[historicalDataOneHour.length - 1][4], rsi4h, rsi1d, fourHourCandlesticks, oneDayCandlesticks] );
+            symBolData.push([symbol, combinePri, historicalDataOneHour[historicalDataOneHour.length - 1][4], rsi4h, rsi1d, fourHourCandlesticks, oneDayCandlesticks, rsi1h, historicalDataFourHour[historicalDataFourHour.length - 2], perGrouper, fibonnacci] );
+
+
     
 
             

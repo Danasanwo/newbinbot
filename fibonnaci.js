@@ -20,9 +20,9 @@ async function analyseFibonacci(historicalData) {
         ohlcv.volume.push(x[5])
     }
 
-    let closeData = await ohlcv.close.slice(ohlcv.close.length - 50)
-    let highData = await ohlcv.high.slice(ohlcv.high.length - 50)
-    let lowData = await ohlcv.low.slice(ohlcv.low.length - 50)
+    let closeData = await ohlcv.close.slice(ohlcv.close.length - 120)
+    let highData = await ohlcv.high.slice(ohlcv.high.length - 120)
+    let lowData = await ohlcv.low.slice(ohlcv.low.length - 120)
 
     // Function to identify swing highs and lows from the given data
     function findSwingHighsAndLows(dataLow, dataHigh) {
