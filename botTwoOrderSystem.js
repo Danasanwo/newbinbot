@@ -62,12 +62,12 @@ async function orderSymbol(sym, side, binance, price, getUSDTBalance, fib) {
     try {
         let trailingStopPercentage = 1
         let leverage =  await binance.fetchLeverages(sym)
-        let baseOrderAmount = ((0.01 * getUSDTBalance) * 20)/ price
+        let baseOrderAmount = ((0.005 * getUSDTBalance) * 20)/ price
 
 
         let additionalParams = await side == 'buy' ? 'LONG': 'SHORT'
     
-        await binance.createTrailingPercentOrder(sym, 'trailing_stop',side, baseOrderAmount, fib, trailingStopPercentage, fib)
+        await binance.createTrailingPercentOrder(sym, 'trailing_stop',side, baseOrderAmount, undefined, trailingStopPercentage, undefined)
 
         console.log(`${sym} ${side} order has been placed at ${price} bot 2`);
 

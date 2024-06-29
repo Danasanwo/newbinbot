@@ -167,7 +167,7 @@ async function mainBot() {
         let getUSDTBalanceBotTwo = await (await secondBinance.fetchBalance()).info.availableBalance
         let positionSymbolsBotTwo = allPositionsBotTwo.map(obj => obj.info.symbol)
         let uniquePositionSymbolsBotTwo = [...new Set(positionSymbolsBotTwo) ]
-        let numberOfAvailableOrdersBotTwo = 20 - uniquePositionSymbolsBotTwo.length 
+        let numberOfAvailableOrdersBotTwo = 10 - uniquePositionSymbolsBotTwo.length 
 
 
         
