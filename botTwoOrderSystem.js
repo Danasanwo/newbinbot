@@ -5,10 +5,10 @@ async function setStopLossTakeProfit(pos, binance) {
 
 
         let side = pos.side === 'short' || pos.side === 'sell' ? 'buy' : 'sell';
-        let stopLossPrice = await pos.side === 'short' || pos.side === 'sell' ? (pos.entryPrice + (0.3 * pos.entryPrice )): (pos.entryPrice - (0.3 * pos.entryPrice ))
-        let takeProfitPrice = await pos.side === 'short' || pos.side === 'sell' ? (pos.entryPrice - (0.15 * pos.entryPrice )): (pos.entryPrice + (0.05 * pos.entryPrice ))
-        let stopLossThreshold = -(6 * pos.initialMargin);
-        let takeProfitThreshold = 1 * pos.initialMargin;
+        let stopLossPrice = await pos.side === 'short' || pos.side === 'sell' ? (pos.entryPrice + (0.5 * pos.entryPrice )): (pos.entryPrice - (0.5 * pos.entryPrice ))
+        let takeProfitPrice = await pos.side === 'short' || pos.side === 'sell' ? (pos.entryPrice - (0.02 * pos.entryPrice )): (pos.entryPrice + (0.02 * pos.entryPrice ))
+        let stopLossThreshold = -(10 * pos.initialMargin);
+        let takeProfitThreshold = 0.4 * pos.initialMargin;
 
         async function setSLTPorders() {
             // Check if stop loss or take profit conditions are met
@@ -18,7 +18,7 @@ async function setStopLossTakeProfit(pos, binance) {
 
                 console.log(`stop loss for ${pos.info.symbol}`);
             } else {
-                await binance.createTrailingPercentOrder(pos.info.symbol, 'trailing_stop', side, pos.contracts, undefined, 4, takeProfitPrice);
+                await binance.createTrailingPercentOrder(pos.info.symbol, 'trailing_stop', side, pos.contracts, undefined, 0.5, takeProfitPrice);
             }   console.log(`take profit for ${pos.info.symbol}`);
         }
 
@@ -27,8 +27,6 @@ async function setStopLossTakeProfit(pos, binance) {
         if (getPositionOrders.length === 0) setSLTPorders()
 
         if ( getPositionOrders.length === 1) {
-
-            console.log(getPositionOrders[0]);
 
 
             if (pos.unrealizedPnl <= stopLossThreshold) {
@@ -122,7 +120,11 @@ async function cancelExistingOrders(markets, binance, getUSDTBalance) {
                 }
 
 
+            let timeNow = new Date().getTime()
+
             if (openOrders.length == 0) {
+
+                
                 
                     if ((rsi1h >= 60)|| (rsi1h <= 40)) {
 
