@@ -62,7 +62,7 @@ async function orderSymbol(sym, side, binance, price, getUSDTBalance, fib) {
     try {
         let trailingStopPercentage = 1
         let leverage =  await binance.fetchLeverages(sym)
-        let baseOrderAmount = ((0.005 * getUSDTBalance) * 20)/ price
+        let baseOrderAmount = ((0.004 * getUSDTBalance) * 20)/ price
 
         let orderPrice = (fib + price)/2
 
@@ -157,7 +157,7 @@ async function cancelExistingOrders(markets, binance, getUSDTBalance) {
                     }
                     
                 } catch (error) {
-                    console.log('could not cancel');
+                    console.log('could not cancel', error.message);
                     
                 }
              
