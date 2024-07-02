@@ -34,7 +34,7 @@ async function mainBot() {
         let rsi4hUpperlimit = combined4hRSIValue && combined4hRSIValue + 20 > 73 ? combined4hRSIValue + 20 : 73
         let rsi4hLowerLimit = combined4hRSIValue && combined4hRSIValue - 15 < 25 ? combined4hRSIValue - 15 : 25
 
-        let rsi1dUpperLimit = combined1dRSIValue && combined1dRSIValue + 20 > 72 ? combined1dRSIValue + 20 : 72
+        let rsi1dUpperLimit = combined1dRSIValue && combined1dRSIValue + 20 > 71 ? combined1dRSIValue + 20 : 71
         let rsi1dLowerLimit  = combined4hRSIValue && combined1dRSIValue - 12 < 27 ? combined1dRSIValue - 12: 27
 
         console.log("limits:", rsi4hUpperlimit,rsi4hLowerLimit, rsi1dUpperLimit, rsi1dLowerLimit);
