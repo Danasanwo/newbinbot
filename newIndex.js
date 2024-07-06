@@ -163,30 +163,30 @@ async function mainBot() {
 
     
 
-        let allPositionsBotTwo = await secondBinance.fetchPositions()
-        let getUSDTBalanceBotTwo = await (await secondBinance.fetchBalance()).info.availableBalance
-        let positionSymbolsBotTwo = allPositionsBotTwo.map(obj => obj.info.symbol)
-        let uniquePositionSymbolsBotTwo = [...new Set(positionSymbolsBotTwo) ]
-        let numberOfAvailableOrdersBotTwo = 25 - uniquePositionSymbolsBotTwo.length 
+        // let allPositionsBotTwo = await secondBinance.fetchPositions()
+        // let getUSDTBalanceBotTwo = await (await secondBinance.fetchBalance()).info.availableBalance
+        // let positionSymbolsBotTwo = allPositionsBotTwo.map(obj => obj.info.symbol)
+        // let uniquePositionSymbolsBotTwo = [...new Set(positionSymbolsBotTwo) ]
+        // let numberOfAvailableOrdersBotTwo = 25 - uniquePositionSymbolsBotTwo.length 
 
 
         
-        for (pos of allPositionsBotTwo) {
-            orderSystem.setStopLossTakeProfit(pos, secondBinance)
-        }
+        // for (pos of allPositionsBotTwo) {
+        //     orderSystem.setStopLossTakeProfit(pos, secondBinance)
+        // }
 
-        if (numberOfAvailableOrdersBotTwo > 0) {
+        // if (numberOfAvailableOrdersBotTwo > 0) {
 
-            try {
+        //     try {
 
-                let orderableSymbolsinBotTwo = await placeOrder.removePositionsFromSymbolData(symBolData, uniquePositionSymbolsBotTwo).slice(0, numberOfAvailableOrdersBotTwo)
+        //         let orderableSymbolsinBotTwo = await placeOrder.removePositionsFromSymbolData(symBolData, uniquePositionSymbolsBotTwo).slice(0, numberOfAvailableOrdersBotTwo)
 
-                let continueOrderinBotTwo = await orderSystem.cancelExistingOrders(orderableSymbolsinBotTwo, secondBinance, getUSDTBalanceBotTwo)
-            } catch (error) {
-                console.log('error placing order in bot 2');
-            }
+        //         let continueOrderinBotTwo = await orderSystem.cancelExistingOrders(orderableSymbolsinBotTwo, secondBinance, getUSDTBalanceBotTwo)
+        //     } catch (error) {
+        //         console.log('error placing order in bot 2');
+        //     }
 
-        } else console.log('positions in bot 2 are filled');
+        // } else console.log('positions in bot 2 are filled');
 
 
 
