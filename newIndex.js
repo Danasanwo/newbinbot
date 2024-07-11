@@ -31,10 +31,10 @@ async function mainBot() {
         let combined1dRSIArray = symBolData.map(a => a[4]).filter(element => typeof element === 'number')
         let combined1dRSIValue = combined1dRSIArray.length > 0 ? ((combined1dRSIArray.reduce((acc, curr) => acc + curr, 0))/combined1dRSIArray.length):0
 
-        let rsi4hUpperlimit = combined4hRSIValue && combined4hRSIValue + 20 > 73 ? combined4hRSIValue + 20 : 73
+        let rsi4hUpperlimit = combined4hRSIValue && combined4hRSIValue + 18 > 73 ? combined4hRSIValue + 18 : 73
         let rsi4hLowerLimit = combined4hRSIValue && combined4hRSIValue - 15 < 25 ? combined4hRSIValue - 15 : 25
 
-        let rsi1dUpperLimit = combined1dRSIValue && combined1dRSIValue + 20 > 71 ? combined1dRSIValue + 20 : 71
+        let rsi1dUpperLimit = combined1dRSIValue && combined1dRSIValue + 15 > 71 ? combined1dRSIValue + 15 : 71
         let rsi1dLowerLimit  = combined4hRSIValue && combined1dRSIValue - 12 < 27 ? combined1dRSIValue - 12: 27
 
         console.log("limits:", rsi4hUpperlimit,rsi4hLowerLimit, rsi1dUpperLimit, rsi1dLowerLimit);
@@ -69,8 +69,8 @@ async function mainBot() {
         let getUSDTBalance = await (await binance.fetchBalance()).info.availableBalance
         let positionSymbols = allPositions.map(obj => obj.info.symbol)
         let uniquePositionSymbols = [...new Set(positionSymbols) ]
-        let numberOfAvailableOrders = 10 - uniquePositionSymbols.length 
-        let numberOfAvailableOrders80 = 15 - uniquePositionSymbols.length
+        let numberOfAvailableOrders = 7 - uniquePositionSymbols.length 
+        let numberOfAvailableOrders80 = 10 - uniquePositionSymbols.length
     
 
 
@@ -215,7 +215,7 @@ binance
 
 mainBot()
 
-setInterval(mainBot, 1500000)
+setInterval(mainBot, 1200000)
 
 
 

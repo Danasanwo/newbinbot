@@ -26,9 +26,9 @@ async function setStopLossTakeProfit(pos, binance, symbolData) {
 
         let side = positionSide === 'short' || positionSide === 'sell' ? 'buy' : 'sell';
         let stopLossPrice = await positionSide === 'short' || positionSide === 'sell' ? (entryPrice + (0.15 * entryPrice )): (entryPrice - (0.15 * entryPrice ))
-        let takeProfitPrice = await positionSide === 'short' || positionSide === 'sell' ? (entryPrice - (0.05 * entryPrice )): (entryPrice + (0.03 * entryPrice ))
+        let takeProfitPrice = await positionSide === 'short' || positionSide === 'sell' ? (entryPrice - (0.03 * entryPrice )): (entryPrice + (0.15 * entryPrice ))
         let stopLossThreshold = -(3 * initialMargin);
-        let takeProfitThreshold = 0.6 * initialMargin;
+        let takeProfitThreshold = await positionSide === 'short' || positionSide == 'sell' ? 0.6 * initialMargin : 3 * initialMargin;
 
 
         async function setSLTPorders() { 

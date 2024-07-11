@@ -1,6 +1,6 @@
 async function orderSymbol(sym, side, binance, price, getUSDTBalance, amount) {
     try {
-        let trailingStopPercentageSell = 3
+        let trailingStopPercentageSell = 2.5
         let trailingStopPercentageBuy = 2
         let leverage =  await binance.fetchLeverages(sym)
         let baseOrderAmount = ((0.02 * getUSDTBalance * amount) * 20)/ price
