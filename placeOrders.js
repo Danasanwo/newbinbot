@@ -1,10 +1,10 @@
 async function orderSymbol(sym, side, binance, price, getUSDTBalance, amount) {
     try {
-        let trailingStopPercentageSell = 2.5
-        let trailingStopPercentageBuy = 2
+        let trailingStopPercentageSell = 5
+        let trailingStopPercentageBuy = 4
         let leverage =  await binance.fetchLeverages(sym)
-        let baseOrderAmount = ((0.02 * getUSDTBalance * amount) * 20)/ price
-        let triggerPrice = await side == 'buy' ? (price - (0.005 * price)) : (price + (0.005 * price))
+        let baseOrderAmount = ((0.02 * getUSDTBalance) * 20)/ price
+        let triggerPrice = await side == 'buy' ? (price - (0.002 * price)) : (price + (0.005 * price))
 
         let additionalParams = await side == 'buy' ? 'LONG': 'SHORT'
     
@@ -46,7 +46,7 @@ async function cancelExistingOrders(markets, binance, getUSDTBalance) {
                 if (((rsi1d > 70 && bullBear1d <= 0)|| (rsi1d < 30 && bullBear1d >= 0))) {
                     marketSide = rsi1d > 70 ? 'sell': 'buy'
 
-                    let tradeAmount = 0.4
+                    let tradeAmount = 0.8
 
                     if (rsi1d > 94) tradeAmount = 5
                     else if (rsi1d > 90) tradeAmount = 3

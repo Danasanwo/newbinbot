@@ -19,6 +19,9 @@ const newRiskManager = require('./redoRiskManagement')
 async function mainBot() {
     try {
 
+      
+        
+
         let symBolData = await combineAlgo.compileAlgo(binance)
 
 
@@ -69,9 +72,12 @@ async function mainBot() {
         let getUSDTBalance = await (await binance.fetchBalance()).info.availableBalance
         let positionSymbols = allPositions.map(obj => obj.info.symbol)
         let uniquePositionSymbols = [...new Set(positionSymbols) ]
-        let numberOfAvailableOrders = 7 - uniquePositionSymbols.length 
-        let numberOfAvailableOrders80 = 10 - uniquePositionSymbols.length
+        let numberOfAvailableOrders = 3 - uniquePositionSymbols.length 
+        let numberOfAvailableOrders80 = 4 - uniquePositionSymbols.length
     
+
+        console.log(allPositions, getUSDTBalance);
+        
 
 
         for (pos of allPositions) {
@@ -134,7 +140,7 @@ async function mainBot() {
 
         } else console.log('positions in bot 1 are filled');
 
-        if ((numberOfAvailableOrders + 3) > 0) {
+        if ((numberOfAvailableOrders + 1) > 0) {
                 
             try {
 
@@ -156,10 +162,32 @@ async function mainBot() {
         } else console.log('positions in bot 1 buy are filled');
 
 
-        //for bot two
-        console.log('for bot two');
+    } catch (error) {
+        console.log(error);
+    }
+}
 
-        symDataBotTwo = symBolData.sort((a, b) => Math.abs(b[1]) - Math.abs(a[1]));
+const binance = new ccxt.binanceusdm({
+    apiKey: process.env.BINANCE_API_KEY,
+    secret: process.env.BINANCE_SECRET_KEY
+})
+
+const secondBinance = new ccxt.binanceusdm({
+    apiKey: process.env.BINANCE_TWO_API_KEY,
+    secret: process.env.BINANCE_TWO_SECRET_KEY
+})
+
+
+
+mainBot()
+
+setInterval(mainBot, 2500000)
+
+
+               //for bot two
+        // console.log('for bot two');
+
+        // symDataBotTwo = symBolData.sort((a, b) => Math.abs(b[1]) - Math.abs(a[1]));
 
     
 
@@ -188,34 +216,6 @@ async function mainBot() {
 
         // } else console.log('positions in bot 2 are filled');
 
-
-
-
-
-
-
-
-    } catch (error) {
-        console.log(error);
-    }
-}
-
-const binance = new ccxt.binanceusdm({
-    apiKey: process.env.BINANCE_API_KEY,
-    secret: process.env.BINANCE_SECRET_KEY
-})
-
-const secondBinance = new ccxt.binanceusdm({
-    apiKey: process.env.BINANCE_TWO_API_KEY,
-    secret: process.env.BINANCE_TWO_SECRET_KEY
-})
-
-
-binance
-
-mainBot()
-
-setInterval(mainBot, 1200000)
 
 
 
