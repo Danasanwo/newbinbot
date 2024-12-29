@@ -116,7 +116,12 @@ async function setStopLossTakeProfit(pos, binance, symbolData) {
         // }
 
         async function setLossProfitTaker() {
-            await binance.createTrailingPercentOrder(positionSymbol, 'trailing_stop', side, positionContracts, undefined, 7.5)
+
+            let trailingPercentage = Math.abs((unrealizedPnl/initialMargin) * 5)
+
+            if ((unrealizedPnl > (0.5 * initialMargin)) || (unrealizedPnl < (- initialMargin))) {
+                await binance.createTrailingPercentOrder(positionSymbol, 'trailing_stop', side, positionContracts, undefined, trailingPercentage > 5 ? 5 :trailingPercentage)
+            }
         }
         
 
