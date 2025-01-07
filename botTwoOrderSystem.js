@@ -26,27 +26,27 @@ async function setStopLossTakeProfit(pos, binance) {
         // Check if there are no open orders for the position
         if (getPositionOrders.length === 0) setSLTPorders()
 
-        if ( getPositionOrders.length === 1) {
+        // if ( getPositionOrders.length === 1) {
 
 
-            if (pos.unrealizedPnl <= stopLossThreshold) {
-               if (side == 'sell') {
-                    if (getPositionOrders[0].triggerPrice > stopLossPrice) {
-                        await binance.cancelOrder(getPositionOrders[0].id, pos.info.symbol);
-                        setSLTPorders()
-                    }
-               }
-               if (side ==='buy') {
-                if (getPositionOrders[0].triggerPrice < stopLossPrice) {
-                    await binance.cancelOrder(getPositionOrders[0].id, pos.info.symbol);
-                    setSLTPorders()
-                }
-           }
+        //     if (pos.unrealizedPnl <= stopLossThreshold) {
+        //        if (side == 'sell') {
+        //             if (getPositionOrders[0].triggerPrice > stopLossPrice) {
+        //                 await binance.cancelOrder(getPositionOrders[0].id, pos.info.symbol);
+        //                 setSLTPorders()
+        //             }
+        //        }
+        //        if (side ==='buy') {
+        //         if (getPositionOrders[0].triggerPrice < stopLossPrice) {
+        //             await binance.cancelOrder(getPositionOrders[0].id, pos.info.symbol);
+        //             setSLTPorders()
+        //         }
+        //    }
 
-            }
+        //     }
 
        
-        }
+        // }
 
     } catch (error) {
         console.error("An error occurred in setStopLossTakeProfit:", error);
