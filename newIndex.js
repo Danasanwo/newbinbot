@@ -183,7 +183,7 @@ const secondBinance = new ccxt.binanceusdm({
 
 mainBot()
 
-setInterval(mainBot, 2500000)
+setInterval(mainBot, 1800000)
 
 
 
