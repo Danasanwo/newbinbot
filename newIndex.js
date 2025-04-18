@@ -19,8 +19,6 @@ const newRiskManager = require('./redoRiskManagement')
 async function mainBot() {
     try {
 
-      
-        
 
         let symBolData = await combineAlgo.compileAlgo(binance)
 
@@ -40,7 +38,7 @@ async function mainBot() {
         let rsi1dUpperLimit = combined1dRSIValue && combined1dRSIValue + 15 > 71 ? combined1dRSIValue + 15 : 71
         let rsi1dLowerLimit  = combined4hRSIValue && combined1dRSIValue - 12 < 27 ? combined1dRSIValue - 12: 27
 
-        console.log("limits:", rsi4hUpperlimit,rsi4hLowerLimit, rsi1dUpperLimit, rsi1dLowerLimit);
+        
 
 
         // Lower RSIs 
@@ -65,23 +63,26 @@ async function mainBot() {
         let symbolData1dRSI8020 = symBolData.sort((a, b) => Math.abs(a[3]) - Math.abs(b[3])).filter((a) =>  a[3] < (rsi1dLowerLimit - 5));
 
     
-        console.log("let's go for bot 1");
+        // console.log("let's go for bot 1");
+
 
 
         let allPositions = await binance.fetchPositions()
         let getUSDTBalance = await (await binance.fetchBalance()).info.availableBalance
         let positionSymbols = allPositions.map(obj => obj.info.symbol)
         let uniquePositionSymbols = [...new Set(positionSymbols) ]
-        let numberOfAvailableOrders = 3 - uniquePositionSymbols.length 
-        let numberOfAvailableOrders80 = 4 - uniquePositionSymbols.length
+        let numberOfAvailableOrders = combined4hRSIValue && (combined4hRSIValue > 73 || combined4hRSIArray < 27) ? 30 : 8 - uniquePositionSymbols.length 
+        let numberOfAvailableOrders80 = 15 - uniquePositionSymbols.length
+
+
     
 
-        console.log(allPositions, getUSDTBalance);
+        // console.log(allPositions, getUSDTBalance);
         
-
+    
 
         for (pos of allPositions) {
-            newRiskManager.setStopLossTakeProfit(pos, binance, symBolData)
+            newRiskManager.setStopLossTakeProfit(pos, binance, symBolData, getUSDTBalance)
         }
 
         if (numberOfAvailableOrders80 > 0) {
@@ -172,6 +173,7 @@ const binance = new ccxt.binanceusdm({
     secret: process.env.BINANCE_SECRET_KEY
 })
 
+
 const secondBinance = new ccxt.binanceusdm({
     apiKey: process.env.BINANCE_TWO_API_KEY,
     secret: process.env.BINANCE_TWO_SECRET_KEY
@@ -182,83 +184,6 @@ const secondBinance = new ccxt.binanceusdm({
 mainBot()
 
 setInterval(mainBot, 2500000)
-
-
-               //for bot two
-        // console.log('for bot two');
-
-        // symDataBotTwo = symBolData.sort((a, b) => Math.abs(b[1]) - Math.abs(a[1]));
-
-    
-
-        // let allPositionsBotTwo = await secondBinance.fetchPositions()
-        // let getUSDTBalanceBotTwo = await (await secondBinance.fetchBalance()).info.availableBalance
-        // let positionSymbolsBotTwo = allPositionsBotTwo.map(obj => obj.info.symbol)
-        // let uniquePositionSymbolsBotTwo = [...new Set(positionSymbolsBotTwo) ]
-        // let numberOfAvailableOrdersBotTwo = 25 - uniquePositionSymbolsBotTwo.length 
-
-
-        
-        // for (pos of allPositionsBotTwo) {
-        //     orderSystem.setStopLossTakeProfit(pos, secondBinance)
-        // }
-
-        // if (numberOfAvailableOrdersBotTwo > 0) {
-
-        //     try {
-
-        //         let orderableSymbolsinBotTwo = await placeOrder.removePositionsFromSymbolData(symBolData, uniquePositionSymbolsBotTwo).slice(0, numberOfAvailableOrdersBotTwo)
-
-        //         let continueOrderinBotTwo = await orderSystem.cancelExistingOrders(orderableSymbolsinBotTwo, secondBinance, getUSDTBalanceBotTwo)
-        //     } catch (error) {
-        //         console.log('error placing order in bot 2');
-        //     }
-
-        // } else console.log('positions in bot 2 are filled');
-
-
-
-
-
-        // console.log("let's go for bot 2");
-
-        // let allPositionsBotTwo = await secondBinance.fetchPositions()
-        // let getUSDTBalanceBotTwo = await (await secondBinance.fetchBalance()).info.availableBalance
-        // let positionSymbolsBotTwo = allPositionsBotTwo.map(obj => obj.info.symbol)
-        // let uniquePositionSymbolsBotTwo = [...new Set(positionSymbolsBotTwo) ]
-        // let numberOfAvailableOrdersBotTwo = 8 - uniquePositionSymbolsBotTwo.length 
-
-
-        // for (pos of allPositionsBotTwo) {
-        //     orderSystem.setStopLossTakeProfit(pos, secondBinance)
-        // }
-
-        // if (numberOfAvailableOrdersBotTwo > 0) {
-
-        //     try {
-        //         let orderableSymbolsinBotTwo = await placeOrder.removePositionsFromSymbolData(symBolData, uniquePositionSymbolsBotTwo).slice(0, numberOfAvailableOrdersBotTwo)
-        //         let continueOrderinBotTwo = await orderSystem.cancelExistingOrders(orderableSymbolsinBotTwo, secondBinance, getUSDTBalanceBotTwo)
-        //     } catch (error) {
-        //         console.log('error placing order in bot 2');
-        //     }
-
-        // } else console.log('positions in bot 2 are filled');
-
-        // let continueOrder =
-
-                // try {
-
-            //     let orderableSymbols =await placeOrder.removePositionsFromSymbolData(symBolData, uniquePositionSymbols).slice(0, numberOfAvailableOrders)
-                
-            // } catch (error) {
-            //     console.log('error placing order in bot 1');
-            // }
-
-    
-
-                // let orderableSymbols = []
-                // let compileOrderableSymbols = await placeOrder.removePositionsFromSymbolData(symBolData, uniquePositionSymbols).slice(0, numberOfAvailableOrders)
-     
 
 
 

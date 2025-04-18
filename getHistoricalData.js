@@ -8,7 +8,9 @@ async function getHistoricalData(symbol) {
     let historicalDataFourHour= await binance.fetchOHLCV(symbol, '4h')
     let historicalDataOneDay = await binance.fetchOHLCV(symbol, '1d')
 
+
     return historicalDataOneHour, historicalDataFourHour, historicalDataOneDay
+
         
     } catch (error) {
         console.log(`could not get historical data of ${symbol}`);
@@ -28,6 +30,7 @@ async function getAllMarket(exchange) {
                 futuresMarket.push(market.id)
             }
         }
+        
     
         return futuresMarket
     } catch (error) {

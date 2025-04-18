@@ -1,7 +1,7 @@
 const placeOrder = require('./placeOrders')
 
 
-async function setStopLossTakeProfit(pos, binance, symbolData) {
+async function setStopLossTakeProfit(pos, binance, symbolData, getUSDTBalance) {
     try {
         // Fetch open orders for the position's symbol
 
@@ -12,23 +12,63 @@ async function setStopLossTakeProfit(pos, binance, symbolData) {
         let unrealizedPnl = pos.unrealizedPnl
         let positionContracts = pos.contracts
 
+        let reSide = positionSide === 'short' || positionSide === 'sell' ? 'sell' : 'buy';
+
         let getPositionOrders = await binance.fetchOpenOrders(positionSymbol);
 
+        if (getPositionOrders.length > 1) {
+            getPositionOrders.forEach(async order => {
+                await binance.cancelOrder(order.id, positionSymbol)
+            })
+        }
 
-        let getSymbolData = await placeOrder.findArrayWithElement(symbolData, positionSymbol)
 
-        let algorithmicComPri =getSymbolData ? getSymbolData[1] : 0
-        let currentPrice = getSymbolData ? getSymbolData[2] : 0
-        let rsi4h = getSymbolData ? getSymbolData[3] : 50
-        let rsi1d = getSymbolData ? getSymbolData[4] : 50
+        // let getSymbolData = await placeOrder.findArrayWithElement(symbolData, positionSymbol)
+
+        // let algorithmicComPri = getSymbolData ? getSymbolData[1] : 0
+        // let currentPrice = getSymbolData ? getSymbolData[2] : 0
+        // let rsi4h = getSymbolData ? getSymbolData[3] : 50
+        // let rsi1d = getSymbolData ? getSymbolData[4] : 50
        
 
 
         let side = positionSide === 'short' || positionSide === 'sell' ? 'buy' : 'sell';
-        let stopLossPrice = await positionSide === 'short' || positionSide === 'sell' ? (entryPrice + (0.15 * entryPrice )): (entryPrice - (0.15 * entryPrice ))
-        let takeProfitPrice = await positionSide === 'short' || positionSide === 'sell' ? (entryPrice - (0.05 * entryPrice )): (entryPrice + (0.15 * entryPrice ))
-        let stopLossThreshold = -(3 * initialMargin);
-        let takeProfitThreshold = await positionSide === 'short' || positionSide == 'sell' ? 0.6 * initialMargin : 3 * initialMargin;
+        // let stopLossPrice = await positionSide === 'short' || positionSide === 'sell' ? (entryPrice + (0.15 * entryPrice )): (entryPrice - (0.15 * entryPrice ))
+        // let takeProfitPrice = await positionSide === 'short' || positionSide === 'sell' ? (entryPrice - (0.05 * entryPrice )): (entryPrice + (0.15 * entryPrice ))
+        // let stopLossThreshold = -(3 * initialMargin);
+        // let takeProfitThreshold = await positionSide === 'short' || positionSide == 'sell' ? 0.6 * initialMargin : 3 * initialMargin;
+
+
+
+        if (unrealizedPnl <= -(0.065 * getUSDTBalance)) {
+
+            getPositionOrders.forEach(async order => {
+                await binance.cancelOrder(order.id, positionSymbol)
+            })
+
+            await binance.createTrailingPercentOrder(positionSymbol, 'trailing_stop', side, positionContracts, undefined, 5)
+        }
+
+        if (unrealizedPnl >= initialMargin && getPositionOrders.length == 0) {
+            await binance.createTrailingPercentOrder(positionSymbol, 'trailing_stop', side, positionContracts, undefined, 5)
+        }
+
+        if (unrealizedPnl <= -(3 * initialMargin) && getPositionOrders.length == 0) {
+            await binance.createTrailingPercentOrder(positionSymbol, 'trailing_stop', reSide, positionContracts, undefined, positionSide == 'short' || positionSide == 'sell' ? 8: 5)
+        }
+
+
+
+    } catch (error) {
+        console.error("An error occurred in setStopLossTakeProfit:", error);
+    }
+}
+
+
+module.exports = {
+    setStopLossTakeProfit,
+}
+
 
 
         // async function setSLTPorders() { 
@@ -115,24 +155,24 @@ async function setStopLossTakeProfit(pos, binance, symbolData) {
          
         // }
 
-        async function setLossProfitTaker() {
+        // async function setLossProfitTaker() {
 
-            let trailingPercentage = Math.abs((unrealizedPnl/initialMargin) * 5)
+        //     // let trailingPercentage = Math.abs((unrealizedPnl/initialMargin) * 5)
 
-            if ((unrealizedPnl > (0.5 * initialMargin)) || (unrealizedPnl < (- initialMargin))) {
-                await binance.createTrailingPercentOrder(positionSymbol, 'trailing_stop', side, positionContracts, undefined, trailingPercentage > 5 ? 5 :trailingPercentage)
-            }
-        }
+        //     // if ((unrealizedPnl > (0.5 * initialMargin)) || (unrealizedPnl < (- initialMargin))) {
+        //     //     await binance.createTrailingPercentOrder(positionSymbol, 'trailing_stop', side, positionContracts, undefined, trailingPercentage > 5 ? 5 :trailingPercentage)
+        //     // }
+        // }
         
 
         // check existing orders 
 
-        if (getPositionOrders.length === 0) {
-            // setSLTPorders()
-            // setAddmore()
-            // setStopLossOrders()
-            setLossProfitTaker()
-        } 
+        // if (getPositionOrders.length === 0) {
+        //     // setSLTPorders()
+        //     // setAddmore()
+        //     // setStopLossOrders()
+        //     setLossProfitTaker()
+        // } 
 
         // if (getPositionOrders.length  == 1) {
 
@@ -163,18 +203,3 @@ async function setStopLossTakeProfit(pos, binance, symbolData) {
         //     setAddmore()
         // }
 
-
-
-
-
-
-
-    } catch (error) {
-        console.error("An error occurred in setStopLossTakeProfit:", error);
-    }
-}
-
-
-module.exports = {
-    setStopLossTakeProfit,
-}
