@@ -54,9 +54,9 @@ async function setStopLossTakeProfit(pos, binance, symbolData, getUSDTBalance) {
         }
 
         if (unrealizedPnl <= -(3 * initialMargin) && getPositionOrders.length == 0) {
-            await binance.createMarketOrder(positionSymbol, side, (0.5 * positionContracts))
+            // await binance.createMarketOrder(positionSymbol, side, (0.5 * positionContracts))
 
-            if (initialMargin < 0.02 * getUSDTBalance) {
+            if (initialMargin < 0.01 * getUSDTBalance) {
                 await binance.createTrailingPercentOrder(positionSymbol, 'trailing_stop', reSide, positionContracts, undefined, positionSide == 'short' || positionSide == 'sell' ? 8: 5)
             }
         }
