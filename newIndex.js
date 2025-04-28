@@ -72,7 +72,7 @@ async function mainBot() {
         let getUSDTBalance = await (await binance.fetchBalance()).info.availableBalance
         let positionSymbols = allPositions.map(obj => obj.info.symbol)
         let uniquePositionSymbols = [...new Set(positionSymbols) ]
-        let numberOfAvailableOrders = combined4hRSIValue && (combined4hRSIValue > 73 || combined4hRSIArray < 27) ? 30 : 8 - uniquePositionSymbols.length 
+        let numberOfAvailableOrders = (combined4hRSIValue && combined4hRSIArray < 27) ? 30 : 8 - uniquePositionSymbols.length 
         let numberOfAvailableOrders80 = 15 - uniquePositionSymbols.length
 
 
@@ -93,20 +93,20 @@ async function mainBot() {
 
 
                 let rsi4h80OrderableSymbols = await placeOrder.removePositionsFromSymbolData(symbolData4hRSI80, uniquePositionSymbols)
-                let rsi1d80OrderableSymbols =  await placeOrder.removePositionsFromSymbolData(symbolData1dRSI80, uniquePositionSymbols)
+                // let rsi1d80OrderableSymbols =  await placeOrder.removePositionsFromSymbolData(symbolData1dRSI80, uniquePositionSymbols)
                 let rsi4h8020OrderableSymbols = await placeOrder.removePositionsFromSymbolData(symbolData4hRSI8020, uniquePositionSymbols)
-                let rsi1d8020OrderableSymbols = await placeOrder.removePositionsFromSymbolData(symbolData1dRSI8020, uniquePositionSymbols)
+                // let rsi1d8020OrderableSymbols = await placeOrder.removePositionsFromSymbolData(symbolData1dRSI8020, uniquePositionSymbols)
     
 
                 rsi4h80OrderableSymbols.slice(0, numberOfAvailableOrders80)
-                rsi1d80OrderableSymbols.slice(0, numberOfAvailableOrders80)
+                // rsi1d80OrderableSymbols.slice(0, numberOfAvailableOrders80)
                 rsi4h8020OrderableSymbols.slice(0, numberOfAvailableOrders80)
-                rsi1d8020OrderableSymbols.slice(0, numberOfAvailableOrders80)
+                // rsi1d8020OrderableSymbols.slice(0, numberOfAvailableOrders80)
                    
                 await placeOrder.cancelExistingOrders(rsi4h80OrderableSymbols, binance, getUSDTBalance)
-                await placeOrder.cancelExistingOrders(rsi1d80OrderableSymbols, binance, getUSDTBalance)
+                // await placeOrder.cancelExistingOrders(rsi1d80OrderableSymbols, binance, getUSDTBalance)
                 await placeOrder.cancelExistingOrders(rsi4h8020OrderableSymbols, binance, getUSDTBalance)
-                await placeOrder.cancelExistingOrders(rsi1d8020OrderableSymbols, binance, getUSDTBalance)
+                // await placeOrder.cancelExistingOrders(rsi1d8020OrderableSymbols, binance, getUSDTBalance)
                 
             } catch (error) {
                 console.log('error placing order in bot 1 - rsi 80');
@@ -124,16 +124,16 @@ async function mainBot() {
                 console.log('rsi70s');
 
                 let rsi4hOrderableSymbols = await placeOrder.removePositionsFromSymbolData(symbolData4hRSI, uniquePositionSymbols)
-                let rsi1dOrderableSymbols = await placeOrder.removePositionsFromSymbolData(symbolData1dRSI, uniquePositionSymbols)
+                // let rsi1dOrderableSymbols = await placeOrder.removePositionsFromSymbolData(symbolData1dRSI, uniquePositionSymbols)
 
                 rsi4hOrderableSymbols.slice(0, numberOfAvailableOrders)
-                rsi1dOrderableSymbols.slice(0, numberOfAvailableOrders)
+                // rsi1dOrderableSymbols.slice(0, numberOfAvailableOrders)
 
                 console.log(rsi4hOrderableSymbols);
-                console.log(rsi1dOrderableSymbols);
+                // console.log(rsi1dOrderableSymbols);
 
                 await placeOrder.cancelExistingOrders(rsi4hOrderableSymbols, binance, getUSDTBalance)
-                await placeOrder.cancelExistingOrders(rsi1dOrderableSymbols, binance, getUSDTBalance)
+                // await placeOrder.cancelExistingOrders(rsi1dOrderableSymbols, binance, getUSDTBalance)
 
             } catch (error) {
                 console.log('error placing order in bot 1');
@@ -149,13 +149,13 @@ async function mainBot() {
                 console.log('rsi70s');
 
                 let rsi4h20OrderableSymbols = await placeOrder.removePositionsFromSymbolData(symbolData4hRSI20, uniquePositionSymbols)
-                let rsi1d20OrderableSymbols = await placeOrder.removePositionsFromSymbolData(symbolData1dRSI20, uniquePositionSymbols)
+                // let rsi1d20OrderableSymbols = await placeOrder.removePositionsFromSymbolData(symbolData1dRSI20, uniquePositionSymbols)
 
                 rsi4h20OrderableSymbols.slice(0, numberOfAvailableOrders)
-                rsi1d20OrderableSymbols.slice(0, numberOfAvailableOrders)
+                // rsi1d20OrderableSymbols.slice(0, numberOfAvailableOrders)
 
                 await placeOrder.cancelExistingOrders(rsi4h20OrderableSymbols, binance, getUSDTBalance)
-                await placeOrder.cancelExistingOrders(rsi1d20OrderableSymbols, binance, getUSDTBalance)
+                // await placeOrder.cancelExistingOrders(rsi1d20OrderableSymbols, binance, getUSDTBalance)
 
             } catch (error) {
                 console.log('error placing order in bot 1');

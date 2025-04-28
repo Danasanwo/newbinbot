@@ -40,7 +40,7 @@ async function setStopLossTakeProfit(pos, binance, symbolData, getUSDTBalance) {
 
 
 
-        if (unrealizedPnl <= -(0.13 * getUSDTBalance)) {
+        if (unrealizedPnl <= -(0.2 * getUSDTBalance)) {
 
             getPositionOrders.forEach(async order => {
                 await binance.cancelOrder(order.id, positionSymbol)
