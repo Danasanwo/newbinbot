@@ -8,7 +8,7 @@ async function orderSymbol(sym, side, binance, price, getUSDTBalance, amount) {
 
         let additionalParams = await side == 'buy' ? 'LONG': 'SHORT'
     
-        await binance.createTrailingPercentOrder(sym, 'trailing_stop',side, side === 'sell' ? baseOrderAmount : (baseOrderAmount / 2), undefined, side === 'sell' ? trailingStopPercentageSell : trailingStopPercentageBuy, undefined)
+        await binance.createTrailingPercentOrder(sym, 'trailing_stop',side, baseOrderAmount, undefined, side === 'sell' ? trailingStopPercentageSell : trailingStopPercentageBuy, undefined)
 
         console.log(`${sym} ${side} order has been placed at ${price}`);
 
