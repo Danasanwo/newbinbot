@@ -10,7 +10,7 @@ async function compileAlgo(binance) {
     const getAllMarket = await getHistoricalData.getAllMarket(binance);
     const symBolData = [];
 
-    await Promise.all(getAllMarket.slice(0,200).map(async symbol => {
+    await Promise.all(getAllMarket.slice(0,300).map(async symbol => {
         try {
 
              
