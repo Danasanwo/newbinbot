@@ -29,15 +29,8 @@ async function mainBot() {
 
         let allPositions = await binance.fetchPositions()
         let getUSDTBalance = await (await binance.fetchBalance()).info.availableBalance
-        let positionSymbols = allPositions.map(obj => obj.info.symbol)
-        let uniquePositionSymbols = [...new Set(positionSymbols) ]
-        let numberOfAvailableOrders = (combined4hRSIValue && combined4hRSIArray < 27) ? 30 : 8 - uniquePositionSymbols.length 
-        let numberOfAvailableOrders80 = 15 - uniquePositionSymbols.length
+       
 
-
-    
-
-        // console.log(allPositions, getUSDTBalance);
         
     
 
@@ -57,10 +50,9 @@ async function mainBot() {
         let symBolData = await combineAlgo.compileAlgo(binance)
 
         console.log(symBolData);
+
         
-
-
-
+    
 
         // change api source 
 
@@ -103,6 +95,11 @@ async function mainBot() {
 
     
         // console.log("let's go for bot 1");
+
+        let positionSymbols = allPositions.map(obj => obj.info.symbol)
+        let uniquePositionSymbols = [...new Set(positionSymbols) ]
+        let numberOfAvailableOrders = (combined4hRSIValue && combined4hRSIArray < 27) ? 30 : 8 - uniquePositionSymbols.length 
+        let numberOfAvailableOrders80 = 15 - uniquePositionSymbols.length
 
 
 
