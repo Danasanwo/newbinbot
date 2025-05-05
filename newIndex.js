@@ -16,12 +16,50 @@ const newOrderSystem = require('./newOrderSystem')
 const newRiskManager = require('./redoRiskManagement')
 
 
+let counter = 0;
+
+
 
 async function mainBot() {
     try {
 
 
+        counter++;
+
+
+        let allPositions = await binance.fetchPositions()
+        let getUSDTBalance = await (await binance.fetchBalance()).info.availableBalance
+        let positionSymbols = allPositions.map(obj => obj.info.symbol)
+        let uniquePositionSymbols = [...new Set(positionSymbols) ]
+        let numberOfAvailableOrders = (combined4hRSIValue && combined4hRSIArray < 27) ? 30 : 8 - uniquePositionSymbols.length 
+        let numberOfAvailableOrders80 = 15 - uniquePositionSymbols.length
+
+
+    
+
+        // console.log(allPositions, getUSDTBalance);
+        
+    
+
+        for (pos of allPositions) {
+            newRiskManager.setStopLossTakeProfit(pos, binance, 0, getUSDTBalance)
+        }
+
+
+
+        if (counter == 20 ) {
+
+
+        counter = 0;
+        
+
+
         let symBolData = await combineAlgo.compileAlgo(binance)
+
+        console.log(symBolData);
+        
+
+
 
 
         // change api source 
@@ -33,11 +71,11 @@ async function mainBot() {
         let combined1dRSIArray = symBolData.map(a => a[4]).filter(element => typeof element === 'number')
         let combined1dRSIValue = combined1dRSIArray.length > 0 ? ((combined1dRSIArray.reduce((acc, curr) => acc + curr, 0))/combined1dRSIArray.length):0
 
-        let rsi4hUpperlimit = combined4hRSIValue && combined4hRSIValue + 18 > 73 ? combined4hRSIValue + 18 : 73
-        let rsi4hLowerLimit = combined4hRSIValue && combined4hRSIValue - 15 < 25 ? combined4hRSIValue - 15 : 25
+        let rsi4hUpperlimit = combined4hRSIValue && combined4hRSIValue + 18 > 74 ? combined4hRSIValue + 18 : 73
+        let rsi4hLowerLimit = combined4hRSIValue && combined4hRSIValue - 15 < 27 ? combined4hRSIValue - 15 : 25
 
         let rsi1dUpperLimit = combined1dRSIValue && combined1dRSIValue + 15 > 71 ? combined1dRSIValue + 15 : 71
-        let rsi1dLowerLimit  = combined4hRSIValue && combined1dRSIValue - 12 < 27 ? combined1dRSIValue - 12: 27
+        let rsi1dLowerLimit  = combined4hRSIValue && combined1dRSIValue - 12 < 28 ? combined1dRSIValue - 12: 27
 
         
 
@@ -68,23 +106,6 @@ async function mainBot() {
 
 
 
-        let allPositions = await binance.fetchPositions()
-        let getUSDTBalance = await (await binance.fetchBalance()).info.availableBalance
-        let positionSymbols = allPositions.map(obj => obj.info.symbol)
-        let uniquePositionSymbols = [...new Set(positionSymbols) ]
-        let numberOfAvailableOrders = (combined4hRSIValue && combined4hRSIArray < 27) ? 30 : 8 - uniquePositionSymbols.length 
-        let numberOfAvailableOrders80 = 15 - uniquePositionSymbols.length
-
-
-    
-
-        // console.log(allPositions, getUSDTBalance);
-        
-    
-
-        for (pos of allPositions) {
-            newRiskManager.setStopLossTakeProfit(pos, binance, symBolData, getUSDTBalance)
-        }
 
         if (numberOfAvailableOrders80 > 0) {
             try {
@@ -162,7 +183,7 @@ async function mainBot() {
             }
 
         } else console.log('positions in bot 1 buy are filled');
-
+        }
 
     } catch (error) {
         console.log(error);
@@ -184,7 +205,7 @@ const secondBinance = new ccxt.binanceusdm({
 
 mainBot()
 
-setInterval(mainBot, 1800000)
+setInterval(mainBot, 180000)
 
 
 

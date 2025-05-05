@@ -361,7 +361,7 @@ async function prioritizeMarkets(candleStick, indicators, price) {
 
 function combineTimePeriod(periodOne, periodTwo, periodThree, periodYesterday) {
     try {
-        let totalPeriodPoints = periodOne + (4 * periodTwo) + (4 * periodThree) + (1 * periodYesterday)
+        let totalPeriodPoints = periodOne + (4 * periodTwo) + (2 * periodThree) + (1 * periodYesterday)
 
         return totalPeriodPoints
     } catch (error) {
